@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": ".cursor/hooks/eslint-guard.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/tsconfig-guard.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/tsconfig-guard.sh",
+        "matcher": "Delete"
+      },
+      {
+        "command": ".cursor/hooks/spec-check.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/spec-lint.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/spec-delete-guard.sh",
+        "matcher": "Delete"
+      },
+      {
+        "command": ".cursor/hooks/eslint-guard.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/tsconfig-guard.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/tsconfig-guard.sh",
+        "matcher": "Delete"
+      },
+      {
+        "command": ".cursor/hooks/spec-check.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/spec-lint.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/spec-delete-guard.sh",
+        "matcher": "Delete"
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": ".cursor/hooks/prettier.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/eslint.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/typecheck.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/jscpd.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/spec-marker.sh",
+        "matcher": "Write"
+      },
+      {
+        "command": ".cursor/hooks/spec-marker.sh",
+        "matcher": "Write"
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/eslint-stop.sh"
+      }
+    ]
+  }
+}

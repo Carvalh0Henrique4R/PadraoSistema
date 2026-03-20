@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": ["**/*.spec.ts"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "noEmit": false,
+    "composite": true,
+    "types": ["bun-types", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "references": [{ "path": "../lib" }]
+}

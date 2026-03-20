@@ -1,0 +1,40 @@
+{
+  "name": "@padraosistema/backend",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/index.ts",
+    "build": "tsc",
+    "start": "bun run dist/index.js",
+    "test": "bun test --passWithNoTests",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@auth/core": "^0.34.3",
+    "@auth/drizzle-adapter": "^1.11.1",
+    "@hono/auth-js": "^1.1.0",
+    "drizzle-orm": "^0.44.7",
+    "hono": "^4.0.0",
+    "postgres": "^3.4.7",
+    "zod": "^4",
+    "@padraosistema/lib": "workspace:*"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^1.11.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.31.6",
+    "eslint": "^9",
+    "eslint-plugin-perfectionist": "^5",
+    "eslint-plugin-sonarjs": "^4",
+    "eslint-plugin-unicorn": "^63",
+    "typescript": "^5.9.0"
+  }
+}

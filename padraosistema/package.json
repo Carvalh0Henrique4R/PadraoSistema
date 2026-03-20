@@ -1,0 +1,66 @@
+{
+  "name": "padraosistema",
+  "version": "2.0.1",
+  "private": true,
+  "type": "module",
+  "description": "A monorepo template with Vite React frontend, HonoJS backend, and shared lib package",
+  "license": "MIT",
+  "author": "Alex Richards <alexchristopherrichards@gmail.com>",
+  "homepage": "https://www.vexapp.io",
+  "engines": {
+    "bun": ">=1.2.21"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acrichards3/create-vex-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/acrichards3/create-vex-app/issues"
+  },
+  "keywords": [
+    "template",
+    "monorepo",
+    "react",
+    "vite",
+    "hono",
+    "bun",
+    "typescript"
+  ],
+  "workspaces": [
+    "frontend",
+    "lib",
+    "backend"
+  ],
+  "scripts": {
+    "build": "bun run build:lib && bun run typecheck && bun run lint && bun run build:frontend && bun run build:backend",
+    "build:all": "bun run build:lib && bun run build:frontend && bun run build:backend",
+    "build:backend": "bun run --filter @padraosistema/backend build",
+    "build:frontend": "bun run --filter @padraosistema/frontend build",
+    "build:lib": "bun run --filter @padraosistema/lib build",
+    "dev": "bun scripts/dev.ts",
+    "dev:backend": "bun run --filter @padraosistema/backend dev",
+    "dev:frontend": "bun run --filter @padraosistema/frontend dev",
+    "dev:lib": "bun run --filter @padraosistema/lib dev",
+    "db:generate": "bun run --filter @padraosistema/backend db:generate",
+    "db:migrate": "bun run --filter @padraosistema/backend db:migrate",
+    "db:push": "bun run --filter @padraosistema/backend db:push",
+    "db:studio": "bun run --filter @padraosistema/backend db:studio",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "bun run format:check && bun run lint:eslint",
+    "lint:eslint": "bun run --filter '*' lint",
+    "lint:fix": "bun run format && bun run --filter '*' lint --fix",
+    "test": "bun run --filter '*' test",
+    "test:backend": "bun run --filter @padraosistema/backend test",
+    "test:frontend": "bun run --filter @padraosistema/frontend test",
+    "test:lib": "bun run --filter @padraosistema/lib test",
+    "test:db:up": "docker compose -f docker-compose.test.yml up -d --wait",
+    "test:db:down": "docker compose -f docker-compose.test.yml down",
+    "typecheck": "bun tsc -b --clean && bun tsc -b"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.5",
+    "prettier": "^3.2.5",
+    "typescript": "^5.9.0"
+  }
+}
