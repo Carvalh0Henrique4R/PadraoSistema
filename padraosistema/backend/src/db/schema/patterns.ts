@@ -5,9 +5,9 @@ export const patterns = pgTable("patterns", {
   title: text("title").notNull(),
   category: text("category").notNull(),
   content: text("content").notNull(),
+  status: text("status").notNull().default("draft"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export type Pattern = typeof patterns.$inferSelect;
 export type NewPattern = typeof patterns.$inferInsert;
-

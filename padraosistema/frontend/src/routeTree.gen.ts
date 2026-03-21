@@ -9,48 +9,72 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PatternsRouteImport } from './routes/patterns'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PatternsIndexRouteImport } from './routes/patterns.index'
+import { Route as PatternsIndexRouteImport } from './routes/patterns/index'
+import { Route as PatternsSegmentRouteImport } from './routes/patterns/$segment'
 
+const PatternsRoute = PatternsRouteImport.update({
+  id: '/patterns',
+  path: '/patterns',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatternsIndexRoute = PatternsIndexRouteImport.update({
-  id: '/patterns/',
-  path: '/patterns/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => PatternsRoute,
+} as any)
+const PatternsSegmentRoute = PatternsSegmentRouteImport.update({
+  id: '/$segment',
+  path: '/$segment',
+  getParentRoute: () => PatternsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/patterns': typeof PatternsRouteWithChildren
+  '/patterns/$segment': typeof PatternsSegmentRoute
   '/patterns/': typeof PatternsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/patterns/$segment': typeof PatternsSegmentRoute
   '/patterns': typeof PatternsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/patterns': typeof PatternsRouteWithChildren
+  '/patterns/$segment': typeof PatternsSegmentRoute
   '/patterns/': typeof PatternsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/patterns/'
+  fullPaths: '/' | '/patterns' | '/patterns/$segment' | '/patterns/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/patterns'
-  id: '__root__' | '/' | '/patterns/'
+  to: '/' | '/patterns/$segment' | '/patterns'
+  id: '__root__' | '/' | '/patterns' | '/patterns/$segment' | '/patterns/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  PatternsIndexRoute: typeof PatternsIndexRoute
+  PatternsRoute: typeof PatternsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/patterns': {
+      id: '/patterns'
+      path: '/patterns'
+      fullPath: '/patterns'
+      preLoaderRoute: typeof PatternsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -60,17 +84,38 @@ declare module '@tanstack/react-router' {
     }
     '/patterns/': {
       id: '/patterns/'
-      path: '/patterns'
+      path: '/'
       fullPath: '/patterns/'
       preLoaderRoute: typeof PatternsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof PatternsRoute
+    }
+    '/patterns/$segment': {
+      id: '/patterns/$segment'
+      path: '/$segment'
+      fullPath: '/patterns/$segment'
+      preLoaderRoute: typeof PatternsSegmentRouteImport
+      parentRoute: typeof PatternsRoute
     }
   }
 }
 
+interface PatternsRouteChildren {
+  PatternsSegmentRoute: typeof PatternsSegmentRoute
+  PatternsIndexRoute: typeof PatternsIndexRoute
+}
+
+const PatternsRouteChildren: PatternsRouteChildren = {
+  PatternsSegmentRoute: PatternsSegmentRoute,
+  PatternsIndexRoute: PatternsIndexRoute,
+}
+
+const PatternsRouteWithChildren = PatternsRoute._addFileChildren(
+  PatternsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  PatternsIndexRoute: PatternsIndexRoute,
+  PatternsRoute: PatternsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

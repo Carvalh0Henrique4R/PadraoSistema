@@ -29,4 +29,3 @@ uploadApp.post("/", async (c) => {
   const url = `/uploads/${fileName}`;
   return c.json({ url }, 201);
 });
-

@@ -4,4 +4,4 @@ export { raise } from "./utils/raise";
 export { tryCatch, tryCatchAsync } from "./utils/tryCatch";
 export type { TryCatchResult } from "./utils/tryCatch";
 export type { User } from "./types/user";
-export type { Pattern, PatternInput } from "./types/pattern";
+export type { Pattern, PatternInput, PatternStatus } from "./types/pattern";

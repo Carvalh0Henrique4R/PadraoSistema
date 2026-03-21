@@ -1,14 +1,17 @@
 import { z } from "zod";
-import type { Pattern, PatternInput } from "@padraosistema/lib";
+import type { Pattern, PatternInput, PatternStatus } from "@padraosistema/lib";
 import { Hono } from "hono";
 import { eq } from "drizzle-orm";
 import { patterns } from "./db/schema/patterns";
 import type { db } from "./db/index";
 
+const patternStatusSchema = z.enum(["stable", "review", "draft", "deprecated"]);
+
 const patternInputSchema = z.object({
   title: z.string().min(1, "Dado [title] é obrigatório"),
   category: z.string().min(1, "Dado [category] é obrigatório"),
   content: z.string().min(1, "Dado [content] é obrigatório"),
+  status: patternStatusSchema.optional(),
 });
 
 type AppDb = typeof db;
@@ -17,13 +20,24 @@ type Variables = {
   db: AppDb;
 };
 
+const mapStatus = (value: string): PatternStatus => {
+  const parsedStatus = patternStatusSchema.safeParse(value);
+  return parsedStatus.success ? parsedStatus.data : "draft";
+};
+
 const mapRecordToPattern = (record: typeof patterns.$inferSelect): Pattern => ({
   id: record.id,
   title: record.title,
   category: record.category,
   content: record.content,
+  status: mapStatus(record.status),
   createdAt: record.createdAt.toISOString(),
 });
+
+const firstZodMessage = (error: z.ZodError): string => {
+  const issue = error.issues[0];
+  return issue.message;
+};
 
 export const patternsApp = new Hono<{ Variables: Variables }>();
 
@@ -59,8 +73,7 @@ patternsApp.post("/", async (c) => {
   const parsed = patternInputSchema.safeParse(body);
 
   if (!parsed.success) {
-    const firstError = parsed.error.errors[0];
-    return c.json({ message: firstError.message }, 400);
+    return c.json({ message: firstZodMessage(parsed.error) }, 400);
   }
 
   const input: PatternInput = parsed.data;
@@ -71,6 +84,7 @@ patternsApp.post("/", async (c) => {
       title: input.title,
       category: input.category,
       content: input.content,
+      status: input.status ?? "draft",
     })
     .returning();
 
@@ -85,11 +99,17 @@ patternsApp.put("/:id", async (c) => {
   const parsed = patternInputSchema.safeParse(body);
 
   if (!parsed.success) {
-    const firstError = parsed.error.errors[0];
-    return c.json({ message: firstError.message }, 400);
+    return c.json({ message: firstZodMessage(parsed.error) }, 400);
   }
 
   const input: PatternInput = parsed.data;
+
+  const [existing] = await database.select().from(patterns).where(eq(patterns.id, id));
+  if (existing == null) {
+    return c.json({ message: "Padrão não encontrado" }, 404);
+  }
+
+  const nextStatus = input.status != null ? input.status : mapStatus(existing.status);
 
   const [updated] = await database
     .update(patterns)
@@ -97,6 +117,7 @@ patternsApp.put("/:id", async (c) => {
       title: input.title,
       category: input.category,
       content: input.content,
+      status: nextStatus,
     })
     .where(eq(patterns.id, id))
     .returning();
@@ -120,4 +141,3 @@ patternsApp.delete("/:id", async (c) => {
 
   return c.json({ success: true });
 });
-

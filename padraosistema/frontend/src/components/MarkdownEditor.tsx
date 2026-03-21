@@ -21,4 +21,3 @@ export const MarkdownEditor = ({ value, onChange, onBlur }: Props): ReactNode =>
     </div>
   );
 };
-

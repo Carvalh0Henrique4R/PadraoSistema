@@ -68,4 +68,3 @@ export const uploadPatternImage = async (file: File): Promise<{ url: string }> =
   const data = (await response.json()) as { url: string };
   return data;
 };
-
