@@ -82,14 +82,9 @@ export const PadroesSidebar: React.FC<Props> = ({ patterns }) => {
         <p className="px-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Status</p>
         <ul className="flex flex-col gap-2">
           {statusOrder.map((status) => (
-            <li
-              key={status}
-              className="flex flex-row items-center justify-between gap-2 px-2 text-sm text-slate-400"
-            >
+            <li key={status} className="flex flex-row items-center justify-between gap-2 px-2 text-sm text-slate-400">
               <span className="flex flex-row items-center gap-2">
-                <span
-                  className={`inline-flex h-2 min-h-2 w-2 min-w-2 rounded-full ${statusMeta[status].dotClass}`}
-                />
+                <span className={`inline-flex h-2 min-h-2 w-2 min-w-2 rounded-full ${statusMeta[status].dotClass}`} />
                 {statusMeta[status].label}
               </span>
               <span className="tabular-nums text-slate-500">{countByStatus(patterns, status)}</span>
