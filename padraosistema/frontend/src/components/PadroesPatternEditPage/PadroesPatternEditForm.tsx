@@ -1,4 +1,4 @@
-import type { Pattern, PatternInput, PatternStatus } from "@padraosistema/lib";
+import type { Pattern, PatternInput } from "@padraosistema/lib";
 import { useNavigate } from "@tanstack/react-router";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -6,21 +6,13 @@ import { useDeletePatternMutation, useUpdatePatternMutation } from "~/api/patter
 import { uploadPatternImage } from "~/api/patterns";
 import { MarkdownEditor } from "~/components/MarkdownEditor";
 import { PATTERN_CATEGORY_LABELS, PATTERN_CATEGORY_SLUGS, isPatternCategorySlug } from "~/constants/patternCategories";
+import { PATTERN_STATUS_LABELS, PATTERN_STATUS_ORDER } from "~/constants/patternStatus";
 
 type Props = {
   pattern: Pattern;
 };
 
 type FormValues = PatternInput;
-
-const statusLabels: Record<PatternStatus, string> = {
-  stable: "Estável",
-  review: "Em revisão",
-  draft: "Rascunho",
-  deprecated: "Depreciado",
-};
-
-const patternStatuses: PatternStatus[] = ["stable", "review", "draft", "deprecated"];
 
 const buildCategoryOptions = (category: string): string[] => {
   const extra = PATTERN_CATEGORY_SLUGS.some((slug) => slug === category) ? [] : [category];
@@ -155,9 +147,9 @@ export const PadroesPatternEditForm: React.FC<Props> = ({ pattern }) => {
               className="rounded-lg border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
               {...register("status", { required: true })}
             >
-              {patternStatuses.map((key) => (
+              {PATTERN_STATUS_ORDER.map((key) => (
                 <option key={key} value={key}>
-                  {statusLabels[key]}
+                  {PATTERN_STATUS_LABELS[key]}
                 </option>
               ))}
             </select>

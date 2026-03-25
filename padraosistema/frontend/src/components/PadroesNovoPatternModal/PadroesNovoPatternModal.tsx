@@ -9,6 +9,7 @@ import {
   PATTERN_CATEGORY_SLUGS,
   type PatternCategorySlug,
 } from "~/constants/patternCategories";
+import { PATTERN_STATUS_LABELS, PATTERN_STATUS_ORDER } from "~/constants/patternStatus";
 
 type Props = {
   open: boolean;
@@ -26,6 +27,7 @@ export const PadroesNovoPatternModal: React.FC<Props> = ({ open, onClose }) => {
       title: "",
       category: defaultCategory,
       content: "",
+      status: "draft",
     },
   });
 
@@ -37,6 +39,7 @@ export const PadroesNovoPatternModal: React.FC<Props> = ({ open, onClose }) => {
         title: "",
         category: defaultCategory,
         content: "",
+        status: "draft",
       });
     }
   }, [open, reset]);
@@ -142,21 +145,39 @@ export const PadroesNovoPatternModal: React.FC<Props> = ({ open, onClose }) => {
               {...register("title", { required: true })}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="padrao-categoria" className="text-sm text-slate-300">
-              Categoria
-            </label>
-            <select
-              id="padrao-categoria"
-              className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
-              {...register("category", { required: true })}
-            >
-              {PATTERN_CATEGORY_SLUGS.map((slug) => (
-                <option key={slug} value={slug}>
-                  {PATTERN_CATEGORY_LABELS[slug]}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <label htmlFor="padrao-categoria" className="text-sm text-slate-300">
+                Categoria
+              </label>
+              <select
+                id="padrao-categoria"
+                className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+                {...register("category", { required: true })}
+              >
+                {PATTERN_CATEGORY_SLUGS.map((slug) => (
+                  <option key={slug} value={slug}>
+                    {PATTERN_CATEGORY_LABELS[slug]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <label htmlFor="padrao-status" className="text-sm text-slate-300">
+                Status
+              </label>
+              <select
+                id="padrao-status"
+                className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+                {...register("status", { required: true })}
+              >
+                {PATTERN_STATUS_ORDER.map((key) => (
+                  <option key={key} value={key}>
+                    {PATTERN_STATUS_LABELS[key]}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="flex min-h-0 flex-1 flex-col gap-2">
             <span className="text-sm text-slate-300">Descrição (Markdown)</span>
