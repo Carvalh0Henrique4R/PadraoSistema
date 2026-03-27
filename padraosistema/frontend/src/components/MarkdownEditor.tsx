@@ -1,23 +1,31 @@
 import MDEditor from "@uiw/react-md-editor";
-import type { ReactNode } from "react";
+import React from "react";
 
 type Props = {
-  value: string;
+  onBlur: (() => void) | undefined;
   onChange: (value: string) => void;
-  onBlur?: () => void;
+  readOnly: boolean | undefined;
+  value: string;
 };
 
-export const MarkdownEditor = ({ value, onChange, onBlur }: Props): ReactNode => {
+export const MarkdownEditor: React.FC<Props> = ({ value, onChange, onBlur, readOnly }) => {
+  const handleChange = React.useCallback(
+    (val: string | undefined): void => {
+      onChange(val ?? "");
+    },
+    [onChange],
+  );
+
+  if (readOnly ?? false) {
+    return (
+      <div className="h-full w-full" data-color-mode="dark">
+        <MDEditor.Markdown source={value} />
+      </div>
+    );
+  }
   return (
-    <div data-color-mode="dark" className="w-full h-full">
-      <MDEditor
-        value={value}
-        onChange={(val) => {
-          onChange(val ?? "");
-        }}
-        onBlur={onBlur}
-        height={400}
-      />
+    <div className="h-full w-full" data-color-mode="dark">
+      <MDEditor value={value} onChange={handleChange} onBlur={onBlur ?? undefined} height={400} />
     </div>
   );
 };

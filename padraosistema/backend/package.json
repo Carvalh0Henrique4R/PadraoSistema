@@ -10,22 +10,26 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "bun run scripts/run-migrations.ts",
+    "db:migrate:kit": "drizzle-kit migrate",
+    "db:reset": "bun run scripts/reset-db-and-migrate.ts",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio --port 4984"
   },
   "dependencies": {
     "@auth/core": "^0.34.3",
     "@auth/drizzle-adapter": "^1.11.1",
     "@hono/auth-js": "^1.1.0",
+    "@padraosistema/lib": "workspace:*",
+    "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.44.7",
     "hono": "^4.0.0",
     "postgres": "^3.4.7",
-    "zod": "^4",
-    "@padraosistema/lib": "workspace:*"
+    "zod": "^4"
   },
   "devDependencies": {
     "@hono/node-server": "^1.11.0",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",

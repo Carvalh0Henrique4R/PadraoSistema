@@ -34,14 +34,14 @@ export const FlashMessageProvider: React.FC<{ children: React.ReactNode }> = ({ 
   return (
     <FlashMessageContext.Provider value={value}>
       {children}
-      {message != null ? (
+      {message === null ? null : (
         <div
           className="fixed bottom-6 left-1/2 z-[100] max-w-[min(90vw,28rem)] -translate-x-1/2 rounded-lg bg-emerald-600 px-4 py-3 text-center text-sm font-medium text-white shadow-lg"
           role="status"
         >
           {message}
         </div>
-      ) : null}
+      )}
     </FlashMessageContext.Provider>
   );
 };

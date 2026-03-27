@@ -4,11 +4,7 @@ import { PadroesPatternEditPage } from "~/components/PadroesPatternEditPage/Padr
 import { PadroesPatternListPage } from "~/components/PadroesPatternListPage/PadroesPatternListPage";
 import { isPatternCategorySlug, isUuidSegment } from "~/constants/patternCategories";
 
-export const Route = createFileRoute("/patterns/$segment")({
-  component: PatternsSegmentPage,
-});
-
-function PatternsSegmentPage(): React.ReactElement {
+const PatternsSegmentPage: React.FC = () => {
   const { segment } = Route.useParams();
 
   if (isUuidSegment(segment)) {
@@ -20,4 +16,8 @@ function PatternsSegmentPage(): React.ReactElement {
   }
 
   return <Navigate to="/patterns" />;
-}
+};
+
+export const Route = createFileRoute("/patterns/$segment")({
+  component: PatternsSegmentPage,
+});

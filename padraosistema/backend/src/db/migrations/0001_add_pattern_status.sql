@@ -1,1 +1,1 @@
-ALTER TABLE "patterns" ADD COLUMN "status" text DEFAULT 'draft' NOT NULL;
+ALTER TABLE "patterns" ADD COLUMN IF NOT EXISTS "status" text DEFAULT 'draft' NOT NULL;

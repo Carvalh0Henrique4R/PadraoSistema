@@ -24,19 +24,31 @@ const getCsrfToken = (): string | undefined => {
   return decodeURIComponent(found);
 };
 
-const buildHeaders = (init: RequestInit | undefined, method: string): Headers => {
-  const headers = new Headers(init?.headers);
+const applyJsonContentType = (headers: Headers, init: RequestInit | undefined): void => {
+  const body = init?.body;
+  const isFormData = body instanceof FormData;
+  if (isFormData) {
+    return;
+  }
   if (!headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
+};
 
-  if (MUTATION_METHODS.has(method)) {
-    const token = getCsrfToken();
-    if (token != null && !headers.has("X-CSRF-Token")) {
-      headers.set("X-CSRF-Token", token);
-    }
+const applyCsrfHeader = (headers: Headers, method: string): void => {
+  if (!MUTATION_METHODS.has(method)) {
+    return;
   }
+  const token = getCsrfToken();
+  if (token != null && !headers.has("X-CSRF-Token")) {
+    headers.set("X-CSRF-Token", token);
+  }
+};
 
+const buildHeaders = (init: RequestInit | undefined, method: string): Headers => {
+  const headers = new Headers(init?.headers);
+  applyJsonContentType(headers, init);
+  applyCsrfHeader(headers, method);
   return headers;
 };
 
@@ -44,13 +56,33 @@ const parseErrorMessage = async (response: Response, isJson: boolean): Promise<s
   const [body] = isJson ? await tryCatchAsync<unknown>(() => response.json()) : [null];
   const parsed = errorResponseSchema.safeParse(body);
   if (parsed.success && parsed.data.message != null) {
-    return String(parsed.data.message);
+    const msg = parsed.data.message;
+    if (typeof msg === "string") {
+      return msg;
+    }
+    return JSON.stringify(msg);
   }
   return response.statusText;
 };
 
-export const apiFetch = async (path: string, init?: RequestInit): Promise<unknown> => {
-  const url = `${env.VITE_BACKEND_URL}${path}`;
+const normalizeApiBase = (base: string): string => base.replace(/\/$/, "");
+
+const resolveBrowserApiBase = (): string => {
+  if (typeof window !== "undefined") {
+    return normalizeApiBase(window.location.origin);
+  }
+  return normalizeApiBase(env.VITE_BACKEND_URL);
+};
+
+type FetchJsonWithBaseParams = {
+  base: string;
+  init?: RequestInit;
+  path: string;
+};
+
+const fetchJsonWithBase = async (params: FetchJsonWithBaseParams): Promise<unknown> => {
+  const { base, path, init } = params;
+  const url = `${normalizeApiBase(base)}${path}`;
   const method = (init?.method ?? "GET").toUpperCase();
   const headers = buildHeaders(init, method);
 
@@ -74,3 +106,9 @@ export const apiFetch = async (path: string, init?: RequestInit): Promise<unknow
 
   return response.json();
 };
+
+export const apiFetch = async (path: string, init?: RequestInit): Promise<unknown> => {
+  return fetchJsonWithBase({ base: resolveBrowserApiBase(), path, init });
+};
+
+export const apiFetchSameOrigin = apiFetch;

@@ -8,7 +8,7 @@ const usersSchema = z.object({
 });
 
 export const helloExample = async (): Promise<z.infer<typeof usersSchema>> => {
-  const data = await apiFetch("/");
+  const data = await apiFetch("/api/health");
   const parsed = usersSchema.parse(data);
   return parsed;
 };

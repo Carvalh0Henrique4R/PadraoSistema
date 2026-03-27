@@ -1,11 +1,21 @@
 import React from "react";
+import { PadroesHeaderAccountMenu } from "./PadroesHeaderAccountMenu";
 
 type Props = {
-  patternCount: number;
   onNovoPadrao: () => void;
+  patternCount: number;
+  showAccountMenu: boolean;
+  showNovoButton: boolean;
+  userDisplayName: string | null;
 };
 
-export const PadroesHeader: React.FC<Props> = ({ patternCount, onNovoPadrao }) => {
+export const PadroesHeader: React.FC<Props> = ({
+  onNovoPadrao,
+  patternCount,
+  showAccountMenu,
+  showNovoButton,
+  userDisplayName,
+}) => {
   return (
     <header className="flex shrink-0 flex-wrap items-start justify-between gap-4 border-b border-white/10 px-6 py-5">
       <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -19,17 +29,25 @@ export const PadroesHeader: React.FC<Props> = ({ patternCount, onNovoPadrao }) =
           <p className="text-sm text-slate-400">Documentação centralizada de padrões e componentes.</p>
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex min-w-0 flex-wrap items-center gap-3">
+        {userDisplayName === null ? null : (
+          <span className="max-w-48 truncate text-sm text-slate-400" title={userDisplayName}>
+            {userDisplayName}
+          </span>
+        )}
         <span className="rounded-full border border-white/10 bg-slate-900/80 px-4 py-1.5 text-sm text-slate-300">
           {patternCount} padrões
         </span>
-        <button
-          type="button"
-          onClick={onNovoPadrao}
-          className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400"
-        >
-          + Novo Padrão
-        </button>
+        {showNovoButton ? (
+          <button
+            type="button"
+            onClick={onNovoPadrao}
+            className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400"
+          >
+            + Novo Padrão
+          </button>
+        ) : null}
+        {showAccountMenu ? <PadroesHeaderAccountMenu /> : null}
       </div>
     </header>
   );

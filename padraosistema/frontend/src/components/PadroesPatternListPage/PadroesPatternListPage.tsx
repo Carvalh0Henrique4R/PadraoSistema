@@ -1,17 +1,20 @@
 import type { Pattern } from "@padraosistema/lib";
 import React from "react";
 import { usePatternsQuery } from "~/api/patterns.hooks";
-import { PadroesPatternListEmptyState } from "./PadroesPatternListEmptyState";
-import { PadroesPatternListItems } from "./PadroesPatternListItems";
-import { PadroesPatternListCategoryEmpty } from "./PadroesPatternListCategoryEmpty";
-import { PadroesPatternListNoSearchResults } from "./PadroesPatternListNoSearchResults";
+import { PadroesPatternListResults } from "./PadroesPatternListResults";
 import { PadroesPatternListSearchBar } from "./PadroesPatternListSearchBar";
 
 type Props = {
   categorySlug: string | null;
 };
 
-const filterPatterns = (patterns: Pattern[], categorySlug: string | null, search: string): Pattern[] => {
+type FilterInput = {
+  categorySlug: string | null;
+  patterns: Pattern[];
+  search: string;
+};
+
+const filterPatterns = ({ categorySlug, patterns, search }: FilterInput): Pattern[] => {
   const q = search.trim().toLowerCase();
   return patterns.filter((pattern) => {
     const matchesCategory = categorySlug == null ? true : pattern.category === categorySlug;
@@ -40,24 +43,19 @@ export const PadroesPatternListPage: React.FC<Props> = ({ categorySlug }) => {
     return <div className="flex flex-1 items-center justify-center p-6 text-red-400">Erro ao carregar padrões.</div>;
   }
 
-  const filtered = filterPatterns(patterns, categorySlug, search);
+  const filtered = filterPatterns({ categorySlug, patterns, search });
+  const searchTrimmedLength = search.trim().length;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PadroesPatternListSearchBar value={search} onValueChange={handleSearchValueChange} />
-      {patterns.length === 0 ? (
-        <PadroesPatternListEmptyState />
-      ) : filtered.length === 0 ? (
-        search.trim().length > 0 ? (
-          <PadroesPatternListNoSearchResults onClearSearch={handleClearSearch} />
-        ) : categorySlug != null ? (
-          <PadroesPatternListCategoryEmpty />
-        ) : (
-          <PadroesPatternListNoSearchResults onClearSearch={handleClearSearch} />
-        )
-      ) : (
-        <PadroesPatternListItems patterns={filtered} />
-      )}
+      <PadroesPatternListResults
+        categorySlug={categorySlug}
+        filtered={filtered}
+        onClearSearch={handleClearSearch}
+        patterns={patterns}
+        searchTrimmedLength={searchTrimmedLength}
+      />
     </div>
   );
 };

@@ -1,45 +1,54 @@
+import type { Pattern, PatternInput, PatternVersionDetail, PatternVersionListItem } from "@padraosistema/lib";
+import { raise } from "@padraosistema/lib";
 import { apiFetch } from "./client.util";
-import type { Pattern, PatternInput } from "@padraosistema/lib";
-
-const CSRF_COOKIE_NAMES = ["csrf-token", "XSRF-TOKEN", "_csrf", "csrfToken"] as const;
-
-const getCookie = (name: string): string | undefined => {
-  return document.cookie
-    .split("; ")
-    .find((row) => row.startsWith(`${name}=`))
-    ?.split("=")[1];
-};
-
-const getCsrfToken = (): string | undefined => {
-  const found = CSRF_COOKIE_NAMES.map(getCookie).find((v) => v != null);
-  if (found == null) return undefined;
-  return decodeURIComponent(found);
-};
+import {
+  patternApiSchema,
+  patternListApiSchema,
+  patternVersionDetailApiSchema,
+  patternVersionListApiSchema,
+  uploadResponseSchema,
+} from "./pattern.schemas";
 
 export const listPatterns = async (): Promise<Pattern[]> => {
-  const data = (await apiFetch("/api/patterns")) as Pattern[];
-  return data;
+  const data = await apiFetch("/api/patterns");
+  const parsed = patternListApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta da lista de padrões inválida");
+  }
+  return parsed.data;
 };
 
 export const getPattern = async (id: string): Promise<Pattern> => {
-  const data = (await apiFetch(`/api/patterns/${id}`)) as Pattern;
-  return data;
+  const data = await apiFetch(`/api/patterns/${id}`);
+  const parsed = patternApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta do padrão inválida");
+  }
+  return parsed.data;
 };
 
 export const createPattern = async (input: PatternInput): Promise<Pattern> => {
-  const data = (await apiFetch("/api/patterns", {
-    method: "POST",
+  const data = await apiFetch("/api/patterns", {
     body: JSON.stringify(input),
-  })) as Pattern;
-  return data;
+    method: "POST",
+  });
+  const parsed = patternApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta de criação inválida");
+  }
+  return parsed.data;
 };
 
 export const updatePattern = async (id: string, input: PatternInput): Promise<Pattern> => {
-  const data = (await apiFetch(`/api/patterns/${id}`, {
-    method: "PUT",
+  const data = await apiFetch(`/api/patterns/${id}`, {
     body: JSON.stringify(input),
-  })) as Pattern;
-  return data;
+    method: "PUT",
+  });
+  const parsed = patternApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta de atualização inválida");
+  }
+  return parsed.data;
 };
 
 export const deletePattern = async (id: string): Promise<void> => {
@@ -48,23 +57,38 @@ export const deletePattern = async (id: string): Promise<void> => {
   });
 };
 
+export const listPatternVersions = async (patternId: string): Promise<PatternVersionListItem[]> => {
+  const data = await apiFetch(`/api/patterns/${patternId}/versions`);
+  const parsed = patternVersionListApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta do histórico de versões inválida");
+  }
+  return parsed.data;
+};
+
+export const getPatternVersion = async (
+  patternId: string,
+  version: number,
+): Promise<PatternVersionDetail> => {
+  const data = await apiFetch(`/api/patterns/${patternId}/versions/${String(version)}`);
+  const parsed = patternVersionDetailApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta da versão do padrão inválida");
+  }
+  return parsed.data;
+};
+
 export const uploadPatternImage = async (file: File): Promise<{ url: string }> => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const csrfToken = getCsrfToken();
-
-  const response = await fetch("/api/patterns/upload", {
-    method: "POST",
+  const data = await apiFetch("/api/patterns/upload", {
     body: formData,
-    credentials: "include",
-    headers: csrfToken != null ? { "X-CSRF-Token": csrfToken } : undefined,
+    method: "POST",
   });
-
-  if (!response.ok) {
-    throw new Error("Falha ao fazer upload da imagem");
+  const parsed = uploadResponseSchema.safeParse(data);
+  if (!parsed.success) {
+    return raise("Resposta de upload inválida");
   }
-
-  const data = (await response.json()) as { url: string };
-  return data;
+  return parsed.data;
 };

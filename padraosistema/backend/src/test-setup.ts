@@ -7,7 +7,7 @@ import { resolve } from "path";
 
 Object.assign(Bun.env, {
   AUTH_SECRET: "test-secret-for-testing-only",
-  DATABASE_URL: "postgres://postgres:test@localhost:5433/test",
+  DATABASE_URL: "postgres://postgres:test@localhost:5432/test",
   GOOGLE_CLIENT_ID: "test-client-id",
   GOOGLE_CLIENT_SECRET: "test-client-secret",
 });

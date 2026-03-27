@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import React from "react";
 import { usePatternQuery } from "~/api/patterns.hooks";
+import { useSession } from "~/hooks/useSession";
 import { PadroesPatternEditForm } from "./PadroesPatternEditForm";
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
 
 export const PadroesPatternEditPage: React.FC<Props> = ({ patternId }) => {
   const { data: pattern, isLoading, isError } = usePatternQuery(patternId);
+  const { data: session } = useSession();
 
   if (isLoading) {
     return <div className="flex flex-1 items-center justify-center p-6 text-slate-400">Carregando padrão...</div>;
@@ -25,5 +27,7 @@ export const PadroesPatternEditPage: React.FC<Props> = ({ patternId }) => {
     );
   }
 
-  return <PadroesPatternEditForm pattern={pattern} />;
+  const canEdit = session != null && session.user.id === pattern.userId;
+
+  return <PadroesPatternEditForm canEdit={canEdit} pattern={pattern} />;
 };

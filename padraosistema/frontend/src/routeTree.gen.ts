@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PatternsRouteImport } from './routes/patterns'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PatternsIndexRouteImport } from './routes/patterns/index'
+import { Route as PatternsNewRouteImport } from './routes/patterns/new'
 import { Route as PatternsSegmentRouteImport } from './routes/patterns/$segment'
 
 const PatternsRoute = PatternsRouteImport.update({
   id: '/patterns',
   path: '/patterns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +36,11 @@ const PatternsIndexRoute = PatternsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PatternsRoute,
 } as any)
+const PatternsNewRoute = PatternsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => PatternsRoute,
+} as any)
 const PatternsSegmentRoute = PatternsSegmentRouteImport.update({
   id: '/$segment',
   path: '/$segment',
@@ -37,32 +49,52 @@ const PatternsSegmentRoute = PatternsSegmentRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/patterns': typeof PatternsRouteWithChildren
   '/patterns/$segment': typeof PatternsSegmentRoute
+  '/patterns/new': typeof PatternsNewRoute
   '/patterns/': typeof PatternsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/patterns/$segment': typeof PatternsSegmentRoute
+  '/patterns/new': typeof PatternsNewRoute
   '/patterns': typeof PatternsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/patterns': typeof PatternsRouteWithChildren
   '/patterns/$segment': typeof PatternsSegmentRoute
+  '/patterns/new': typeof PatternsNewRoute
   '/patterns/': typeof PatternsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/patterns' | '/patterns/$segment' | '/patterns/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/patterns'
+    | '/patterns/$segment'
+    | '/patterns/new'
+    | '/patterns/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/patterns/$segment' | '/patterns'
-  id: '__root__' | '/' | '/patterns' | '/patterns/$segment' | '/patterns/'
+  to: '/' | '/login' | '/patterns/$segment' | '/patterns/new' | '/patterns'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/patterns'
+    | '/patterns/$segment'
+    | '/patterns/new'
+    | '/patterns/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
   PatternsRoute: typeof PatternsRouteWithChildren
 }
 
@@ -73,6 +105,13 @@ declare module '@tanstack/react-router' {
       path: '/patterns'
       fullPath: '/patterns'
       preLoaderRoute: typeof PatternsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -89,6 +128,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatternsIndexRouteImport
       parentRoute: typeof PatternsRoute
     }
+    '/patterns/new': {
+      id: '/patterns/new'
+      path: '/new'
+      fullPath: '/patterns/new'
+      preLoaderRoute: typeof PatternsNewRouteImport
+      parentRoute: typeof PatternsRoute
+    }
     '/patterns/$segment': {
       id: '/patterns/$segment'
       path: '/$segment'
@@ -101,11 +147,13 @@ declare module '@tanstack/react-router' {
 
 interface PatternsRouteChildren {
   PatternsSegmentRoute: typeof PatternsSegmentRoute
+  PatternsNewRoute: typeof PatternsNewRoute
   PatternsIndexRoute: typeof PatternsIndexRoute
 }
 
 const PatternsRouteChildren: PatternsRouteChildren = {
   PatternsSegmentRoute: PatternsSegmentRoute,
+  PatternsNewRoute: PatternsNewRoute,
   PatternsIndexRoute: PatternsIndexRoute,
 }
 
@@ -115,6 +163,7 @@ const PatternsRouteWithChildren = PatternsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   PatternsRoute: PatternsRouteWithChildren,
 }
 export const routeTree = rootRouteImport

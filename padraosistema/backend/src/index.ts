@@ -1,28 +1,75 @@
-import Google from "@auth/core/providers/google";
-import { accounts, sessions, verificationTokens } from "./db/schema/auth";
 import { cors } from "hono/cors";
-import { createSecureAdapter } from "./security/secureAdapter";
 import { csrf } from "hono/csrf";
 import { db } from "./db/index";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { env } from "./env/env";
 import { Hono } from "hono";
-import { authHandler, initAuthConfig, verifyAuth } from "@hono/auth-js";
+import { authHandler, initAuthConfig } from "@hono/auth-js";
 import { rateLimit } from "./security/rateLimit";
 import { secureHeaders } from "hono/secure-headers";
 import { serveStatic } from "hono/bun";
-import { tryCatchAsync } from "@padraosistema/lib";
-import { users } from "./db/schema/users";
-import { patternsApp } from "./patterns";
-import { uploadApp } from "./upload";
+import { tryCatch, tryCatchAsync } from "@padraosistema/lib";
+import { createAuthConfig } from "./auth/createAuthConfig";
+import { mountApiRoutes } from "./api/mountRoutes";
+import type { AppVariables } from "./types/app";
 
-const app = new Hono<{ Variables: { db: typeof db } }>();
+const app = new Hono<{ Variables: AppVariables }>();
 
 const resolveOrigin = (origin: string): string | null => {
   if (env.ENVIRONMENT !== "development") {
-    return origin === env.FRONTEND_URL ? origin : null;
+    return origin === new URL(env.FRONTEND_URL).origin ? origin : null;
   }
-  return /^https?:\/\/localhost(:\d+)?$/.test(origin) ? origin : null;
+  const [parsed, err] = tryCatch(() => new URL(origin));
+  if (err != null) {
+    return null;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    return null;
+  }
+  return origin;
+};
+
+const forwardedProtoOrHttp = (raw: string | undefined): string => {
+  return typeof raw === "string" ? raw.split(",")[0]?.trim() ?? "http" : "http";
+};
+
+const hostFromPossibleUrlString = (value: string | undefined): string | undefined => {
+  if (typeof value !== "string" || value.length === 0) {
+    return undefined;
+  }
+  const [parsed, err] = tryCatch(() => new URL(value));
+  if (err != null) {
+    return undefined;
+  }
+  return parsed.host;
+};
+
+/**
+ * Auth.js validates cookies/JWT against `AUTH_URL`. Behind Vite we need the browser origin (e.g. :5173), not the
+ * backend :3000 Host. Prefer `x-forwarded-host`; same-origin GET /session often omits `Origin`, so also use `Referer`.
+ */
+const browserHostForDevAuthUrl = (c: { req: { header: (n: string) => string | undefined } }): string | undefined => {
+  const xf = c.req.header("x-forwarded-host");
+  if (typeof xf === "string" && xf.length > 0) {
+    return xf.split(",")[0]?.trim();
+  }
+  const fromOrigin = hostFromPossibleUrlString(c.req.header("origin"));
+  if (fromOrigin != null) {
+    return fromOrigin;
+  }
+  return hostFromPossibleUrlString(c.req.header("referer"));
+};
+
+const syncDevAuthUrlBehindViteProxy = (c: { req: { header: (n: string) => string | undefined } }): void => {
+  if (env.ENVIRONMENT !== "development") {
+    return;
+  }
+  const headerHost = browserHostForDevAuthUrl(c);
+  const host =
+    headerHost != null && headerHost.length > 0 ? headerHost : new URL(env.FRONTEND_URL).host;
+  const proto = forwardedProtoOrHttp(c.req.header("x-forwarded-proto"));
+  const nextAuthUrl = `${proto}://${host}/api/auth`;
+  Object.assign(Bun.env, { AUTH_URL: nextAuthUrl });
+  Object.assign(process.env, { AUTH_URL: nextAuthUrl });
 };
 
 app.use(
@@ -35,7 +82,12 @@ app.use(
   }),
 );
 
-app.use("*", secureHeaders());
+app.use(
+  "*",
+  secureHeaders({
+    crossOriginResourcePolicy: false,
+  }),
+);
 app.use("*", csrf());
 
 app.use(
@@ -47,59 +99,43 @@ app.use(
   }),
 );
 
+app.use(
+  "/api/register",
+  rateLimit({
+    keyGenerator: undefined,
+    limit: 20,
+    windowMs: 60_000,
+  }),
+);
+
 app.use("*", async (c, next): Promise<void> => {
   c.set("db", db);
   await next();
 });
 
+app.use("*", async (c, next): Promise<void> => {
+  syncDevAuthUrlBehindViteProxy(c);
+  await next();
+});
+
+const drizzleAuthConfig = createAuthConfig({
+  appEnv: env,
+  database: db,
+  oauthEncryptionKey: env.OAUTH_TOKEN_ENCRYPTION_KEY,
+});
+
 app.use(
   "*",
-  initAuthConfig((_c) => ({
-    adapter: createSecureAdapter(
-      DrizzleAdapter(db, {
-        accountsTable: accounts,
-        sessionsTable: sessions,
-        usersTable: users,
-        verificationTokensTable: verificationTokens,
-      }),
-      { oauthEncryptionKey: env.OAUTH_TOKEN_ENCRYPTION_KEY },
-    ),
-    basePath: "/api/auth",
-    callbacks: {
-      redirect({ baseUrl, url }): string {
-        const frontendUrl = env.FRONTEND_URL;
-        const frontendOrigin = new URL(frontendUrl).origin;
-        const backendOrigin = new URL(baseUrl).origin;
-        if (url.startsWith("/")) {
-          return `${frontendUrl}${url}`;
-        }
-        const urlObj = new URL(url);
-        if (urlObj.origin === backendOrigin) {
-          return frontendUrl;
-        }
-        if (urlObj.origin === frontendOrigin) {
-          return url;
-        }
-        return frontendUrl;
-      },
-    },
-    providers: [
-      Google({
-        clientId: env.GOOGLE_CLIENT_ID,
-        clientSecret: env.GOOGLE_CLIENT_SECRET,
-      }),
-    ],
-    secret: env.AUTH_SECRET,
-    session: { strategy: "database" },
-    trustHost: env.ENVIRONMENT === "development",
-  })),
+  initAuthConfig(() => drizzleAuthConfig),
 );
 
 app.use("/api/auth/*", authHandler());
-app.use("/api/protected/*", verifyAuth());
 
-app.route("/api/patterns", patternsApp);
-app.route("/api/patterns/upload", uploadApp);
+mountApiRoutes(app);
+
+app.get("/api/health", (c) => {
+  return c.json({ message: "ok" });
+});
 
 app.use(
   "/uploads/*",

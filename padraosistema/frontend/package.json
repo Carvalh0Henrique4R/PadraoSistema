@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:vite": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -23,6 +24,7 @@
     "zod": "^4"
   },
   "devDependencies": {
+    "@auth/core": "0.34.3",
     "@tailwindcss/postcss": "^4.1.16",
     "@tanstack/router-plugin": "^1.163.3",
     "@types/react": "^19.0.6",

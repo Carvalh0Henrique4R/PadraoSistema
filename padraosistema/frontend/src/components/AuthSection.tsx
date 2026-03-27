@@ -1,4 +1,5 @@
-import { useSession, signIn, signOut } from "@hono/auth-js/react";
+import { signIn, signOut } from "@hono/auth-js/react";
+import { useSession } from "~/hooks/useSession";
 import type { ReactNode } from "react";
 
 const handleSignOut = (): void => {

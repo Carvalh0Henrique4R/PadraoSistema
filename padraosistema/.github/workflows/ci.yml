@@ -23,7 +23,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5433:5432
+          - 5432:5432
 
     steps:
       - name: Checkout code
@@ -49,7 +49,7 @@ jobs:
       - name: Generate migrations
         run: bun run db:generate
         env:
-          DATABASE_URL: postgresql://postgres:test@localhost:5433/test
+          DATABASE_URL: postgresql://postgres:test@localhost:5432/test
 
       - name: Run tests
         run: |

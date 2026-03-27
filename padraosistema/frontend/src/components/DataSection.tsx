@@ -1,6 +1,6 @@
 import { helloExample } from "../api/hello.example";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "@hono/auth-js/react";
+import { useSession } from "~/hooks/useSession";
 import type { ReactNode } from "react";
 
 export const DataSection = (): ReactNode => {
