@@ -1,5 +1,7 @@
 import React from "react";
 import { PadroesHeaderAccountMenu } from "./PadroesHeaderAccountMenu";
+import { PadroesHeaderCartTrigger } from "./PadroesHeaderCartTrigger";
+import { PadroesHeaderZipExport } from "./PadroesHeaderZipExport";
 
 type Props = {
   onNovoPadrao: () => void;
@@ -35,19 +37,27 @@ export const PadroesHeader: React.FC<Props> = ({
             {userDisplayName}
           </span>
         )}
-        <span className="rounded-full border border-white/10 bg-slate-900/80 px-4 py-1.5 text-sm text-slate-300">
-          {patternCount} padrões
-        </span>
-        {showNovoButton ? (
-          <button
-            type="button"
-            onClick={onNovoPadrao}
-            className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400"
-          >
-            + Novo Padrão
-          </button>
-        ) : null}
-        {showAccountMenu ? <PadroesHeaderAccountMenu /> : null}
+        <div className="flex flex-wrap items-center gap-2 border-l border-white/15 pl-3">
+          <span className="rounded-full border border-white/10 bg-slate-900/80 px-4 py-1.5 text-sm text-slate-300">
+            {patternCount} padrões
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-l border-white/15 pl-3">
+          <PadroesHeaderCartTrigger />
+          <PadroesHeaderZipExport />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-l border-white/15 pl-3">
+          {showNovoButton ? (
+            <button
+              type="button"
+              onClick={onNovoPadrao}
+              className="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400"
+            >
+              + Novo Padrão
+            </button>
+          ) : null}
+          {showAccountMenu ? <PadroesHeaderAccountMenu /> : null}
+        </div>
       </div>
     </header>
   );

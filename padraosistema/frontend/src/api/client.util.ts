@@ -111,4 +111,31 @@ export const apiFetch = async (path: string, init?: RequestInit): Promise<unknow
   return fetchJsonWithBase({ base: resolveBrowserApiBase(), path, init });
 };
 
+const fetchBlobWithBase = async (params: FetchJsonWithBaseParams): Promise<Blob> => {
+  const { base, path, init } = params;
+  const url = `${normalizeApiBase(base)}${path}`;
+  const method = (init?.method ?? "GET").toUpperCase();
+  const headers = buildHeaders(init, method);
+
+  const response = await fetch(url, {
+    credentials: "include",
+    headers,
+    ...init,
+  });
+
+  const contentType = response.headers.get("content-type") ?? "";
+  const isJson = contentType.includes("application/json");
+
+  if (!response.ok) {
+    const errorMessage = await parseErrorMessage(response, isJson);
+    throw new Error(`Request failed ${String(response.status)}: ${errorMessage}`);
+  }
+
+  return response.blob();
+};
+
+export const apiFetchBlob = async (path: string, init?: RequestInit): Promise<Blob> => {
+  return fetchBlobWithBase({ base: resolveBrowserApiBase(), path, init });
+};
+
 export const apiFetchSameOrigin = apiFetch;

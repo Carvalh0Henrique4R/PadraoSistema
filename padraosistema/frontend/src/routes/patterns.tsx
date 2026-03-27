@@ -1,7 +1,9 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import React from "react";
+import { CartDrawer } from "~/components/CartDrawer/CartDrawer";
 import { PadroesPatternsLoadingView } from "~/components/PadroesPatternsLoadingView/PadroesPatternsLoadingView";
 import { PadroesShell } from "~/components/PadroesShell/PadroesShell";
+import { PatternCartProvider } from "~/context/PatternCartProvider";
 import { usePatternsRouteSessionGuard } from "~/hooks/usePatternsRouteSessionGuard";
 
 const PatternsLayout: React.FC = () => {
@@ -16,9 +18,12 @@ const PatternsLayout: React.FC = () => {
   }
 
   return (
-    <PadroesShell>
-      <Outlet />
-    </PadroesShell>
+    <PatternCartProvider>
+      <PadroesShell>
+        <Outlet />
+      </PadroesShell>
+      <CartDrawer />
+    </PatternCartProvider>
   );
 };
 

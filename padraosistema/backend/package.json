@@ -24,12 +24,14 @@
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.44.7",
     "hono": "^4.0.0",
+    "jszip": "^3.10.1",
     "postgres": "^3.4.7",
     "zod": "^4"
   },
   "devDependencies": {
     "@hono/node-server": "^1.11.0",
     "@types/bcryptjs": "^3.0.0",
+    "@types/jszip": "^3.4.1",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",

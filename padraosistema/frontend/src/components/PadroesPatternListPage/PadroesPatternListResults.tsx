@@ -2,7 +2,7 @@ import type { Pattern } from "@padraosistema/lib";
 import React from "react";
 import { PadroesPatternListCategoryEmpty } from "./PadroesPatternListCategoryEmpty";
 import { PadroesPatternListEmptyState } from "./PadroesPatternListEmptyState";
-import { PadroesPatternListItem } from "./PadroesPatternListItem";
+import { PadroesPatternListItem } from "./PadroesPatternListItem/PadroesPatternListItem";
 import { PadroesPatternListNoSearchResults } from "./PadroesPatternListNoSearchResults";
 
 type Props = {

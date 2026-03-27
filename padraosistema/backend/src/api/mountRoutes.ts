@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { createExportApp } from "~/modules/export/export.controller";
 import { registerPatternRoutes } from "~/modules/patterns/patterns.controller";
 import { registerApp } from "~/modules/auth/register.controller";
 import { uploadApp } from "~/upload";
@@ -12,4 +13,7 @@ export const mountApiRoutes = (app: Hono<{ Variables: AppVariables }>): void => 
   app.route("/api/patterns", patternsApp);
 
   app.route("/api/patterns/upload", uploadApp);
+
+  const exportApp = createExportApp();
+  app.route("/api/export", exportApp);
 };

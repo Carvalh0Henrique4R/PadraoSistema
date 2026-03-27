@@ -11,4 +11,19 @@ export type {
   PatternVersionDetail,
   PatternVersionListItem,
 } from "./types/pattern";
+export type { ExportRequest, PatternCartState } from "./types/export";
+export {
+  PATTERN_CATEGORY_LABELS,
+  PATTERN_CATEGORY_SLUGS,
+  isPatternCategorySlug,
+  isUuidSegment,
+} from "./patternCategories";
+export type { PatternCategorySlug } from "./patternCategories";
+export {
+  addItem,
+  clearPatternCart,
+  createEmptyPatternCart,
+  getItems,
+  removeItem,
+} from "./patternCart/patternCart";
 export { SYSTEM_MESSAGE_CREATED, SYSTEM_MESSAGE_DELETED, SYSTEM_MESSAGE_UPDATED } from "./systemMessages";
