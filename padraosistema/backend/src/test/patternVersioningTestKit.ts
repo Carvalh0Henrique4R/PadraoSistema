@@ -7,6 +7,7 @@ import { raise } from "@padraosistema/lib";
 import { resolve } from "path";
 import type { AppDb } from "~/db/index";
 import { patterns } from "~/db/schema/patterns";
+import { systemLogs } from "~/db/schema/system_logs";
 import { users } from "~/db/schema/users";
 
 export const closeTestDatabase = async (client: SQL): Promise<void> => {
@@ -14,6 +15,7 @@ export const closeTestDatabase = async (client: SQL): Promise<void> => {
 };
 
 export const deleteUserCascadePatterns = async (params: { database: AppDb; userId: string }): Promise<void> => {
+  await params.database.delete(systemLogs).where(eq(systemLogs.userId, params.userId));
   await params.database.delete(patterns).where(eq(patterns.userId, params.userId));
   await params.database.delete(users).where(eq(users.id, params.userId));
 };

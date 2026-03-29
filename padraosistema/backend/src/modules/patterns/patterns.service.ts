@@ -62,10 +62,12 @@ export const patternContentUnchanged = (params: {
 };
 
 export const insertPatternRow = async (params: {
-  database: AppDb;
+  database: DbExecutor;
   input: PatternInput;
   userId: string;
+  version?: number;
 }): Promise<PatternRow> => {
+  const versionPayload = params.version != null ? { version: params.version } : {};
   const [inserted] = await params.database
     .insert(patterns)
     .values({
@@ -74,6 +76,7 @@ export const insertPatternRow = async (params: {
       status: params.input.status ?? "draft",
       title: params.input.title,
       userId: params.userId,
+      ...versionPayload,
     })
     .returning();
   return inserted;

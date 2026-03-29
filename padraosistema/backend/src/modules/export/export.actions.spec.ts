@@ -9,7 +9,7 @@ import {
   insertTestUser,
   openTestDatabase,
 } from "~/test/patternVersioningTestKit";
-import { exportPatternsZip } from "./export.actions";
+import { exportPatternsZip, normalizeExportPatternIds } from "./export.actions";
 import { ExportPatternsInvalidSelectionError } from "./export.errors";
 
 describe("exportPatternsZip", () => {
@@ -76,6 +76,19 @@ describe("exportPatternsZip", () => {
         });
         expect(bytes.length > 10).toBe(true);
         await deleteUserCascadePatterns({ database: db, userId: ownerId });
+      });
+    });
+  });
+});
+
+describe("normalizeExportPatternIds", () => {
+  describe("WHEN duplicate ids appear in the input", () => {
+    describe("AND normalization runs", () => {
+      it("keeps first-seen order without duplicates", () => {
+        const a = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+        const b = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+        const out = normalizeExportPatternIds([a, b, a]);
+        expect(out).toEqual([a, b]);
       });
     });
   });

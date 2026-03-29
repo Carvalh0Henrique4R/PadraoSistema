@@ -1,8 +1,8 @@
 import type { Pattern } from "@padraosistema/lib";
 import React from "react";
 import { usePatternsQuery } from "~/api/patterns.hooks";
+import { useRegisterPadroesListSearchInHeader } from "~/components/PadroesShell/PadroesShellListSearchContext";
 import { PadroesPatternListResults } from "./PadroesPatternListResults";
-import { PadroesPatternListSearchBar } from "./PadroesPatternListSearchBar";
 
 type Props = {
   categorySlug: string | null;
@@ -27,13 +27,15 @@ export const PadroesPatternListPage: React.FC<Props> = ({ categorySlug }) => {
   const { data: patterns, isLoading, isError } = usePatternsQuery();
   const [search, setSearch] = React.useState("");
 
-  const handleSearchValueChange = (value: string): void => {
+  const handleSearchValueChange = React.useCallback((value: string): void => {
     setSearch(value);
-  };
+  }, []);
 
-  const handleClearSearch = (): void => {
+  const handleClearSearch = React.useCallback((): void => {
     setSearch("");
-  };
+  }, []);
+
+  useRegisterPadroesListSearchInHeader(search, handleSearchValueChange);
 
   if (isLoading) {
     return <div className="flex flex-1 items-center justify-center p-6 text-slate-400">Carregando...</div>;
@@ -48,7 +50,6 @@ export const PadroesPatternListPage: React.FC<Props> = ({ categorySlug }) => {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <PadroesPatternListSearchBar value={search} onValueChange={handleSearchValueChange} />
       <PadroesPatternListResults
         categorySlug={categorySlug}
         filtered={filtered}

@@ -10,11 +10,15 @@ const orderRowsByIds = (params: { ids: string[]; rows: PatternRow[] }): PatternR
   return params.ids.map((id) => byId.get(id) ?? raise("missing pattern row"));
 };
 
+export const normalizeExportPatternIds = (patternIds: string[]): string[] => {
+  return Array.from(new Set(patternIds));
+};
+
 export const exportPatternsZip = async (params: {
   database: AppDb;
   patternIds: string[];
 }): Promise<Uint8Array> => {
-  const uniqueIds = Array.from(new Set(params.patternIds));
+  const uniqueIds = normalizeExportPatternIds(params.patternIds);
   const rows = await findPatternsByIds({
     database: params.database,
     ids: uniqueIds,

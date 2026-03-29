@@ -1,8 +1,9 @@
 import type { Pattern, PatternInput, PatternVersionDetail, PatternVersionListItem } from "@padraosistema/lib";
-import { raise } from "@padraosistema/lib";
+import { isKey, objectKeys, raise } from "@padraosistema/lib";
 import { apiFetch } from "./client.util";
 import {
   patternApiSchema,
+  patternImportResponseSchema,
   patternListApiSchema,
   patternVersionDetailApiSchema,
   patternVersionListApiSchema,
@@ -23,6 +24,25 @@ export const getPattern = async (id: string): Promise<Pattern> => {
   const parsed = patternApiSchema.safeParse(data);
   if (!parsed.success) {
     throw new Error("Resposta do padrão inválida");
+  }
+  return parsed.data;
+};
+
+export const importPatterns = async (payload: unknown): Promise<{ created: number; success: true }> => {
+  const isWrappedBody =
+    payload !== null &&
+    typeof payload === "object" &&
+    !Array.isArray(payload) &&
+    isKey(payload, "data") &&
+    objectKeys(payload).length === 1;
+  const bodyObject = isWrappedBody ? (payload as { data: unknown }) : { data: payload };
+  const res = await apiFetch("/api/patterns/import", {
+    body: JSON.stringify(bodyObject),
+    method: "POST",
+  });
+  const parsed = patternImportResponseSchema.safeParse(res);
+  if (!parsed.success) {
+    throw new Error("Resposta de importação inválida");
   }
   return parsed.data;
 };

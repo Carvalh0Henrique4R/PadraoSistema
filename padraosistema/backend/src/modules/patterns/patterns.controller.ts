@@ -3,6 +3,7 @@ import { raise, tryCatchAsync } from "@padraosistema/lib";
 import { requireAuth } from "~/middlewares/requireAuth";
 import type { AppVariables } from "~/types/app";
 import { registerPatternVersionRoutes } from "~/modules/patternVersions/patternVersions.controller";
+import { importPatternsForUser } from "./import/patterns.import.actions";
 import {
   createPatternForUser,
   deletePatternForUser,
@@ -15,6 +16,26 @@ import { firstZodMessage, patternInputSchema } from "./patterns.schema";
 import { respondIfPutPatternError } from "./patterns.routeErrors";
 
 export const registerPatternRoutes = (app: Hono<{ Variables: AppVariables }>): void => {
+  app.post("/import", requireAuth, async (c) => {
+    const database = c.get("db");
+    const user = c.get("user") ?? raise("Missing authenticated user");
+    const [jsonBody, jsonErr] = await tryCatchAsync(() => c.req.json());
+    if (jsonErr != null) {
+      return c.json({ message: "Corpo da requisição inválido" }, 400);
+    }
+    const result = await importPatternsForUser({
+      body: jsonBody,
+      database,
+      userId: user.id,
+    });
+    if (!result.ok) {
+      const payload =
+        result.index != null ? { index: result.index, message: result.message } : { message: result.message };
+      return c.json(payload, 400);
+    }
+    return c.json({ created: result.created, success: true });
+  });
+
   registerPatternVersionRoutes(app);
 
   app.get("/", async (c) => {

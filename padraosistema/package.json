@@ -32,6 +32,7 @@
     "backend"
   ],
   "scripts": {
+    "postinstall": "bun run build:lib",
     "build": "bun run build:lib && bun run typecheck && bun run lint && bun run build:frontend && bun run build:backend",
     "build:all": "bun run build:lib && bun run build:frontend && bun run build:backend",
     "build:backend": "bun run --filter @padraosistema/backend build",

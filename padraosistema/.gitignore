@@ -49,3 +49,7 @@ coverage/
 
 # Spec-first workflow state — managed automatically by hooks
 .spec-pending
+
+# Docker
+docker-compose.yml
+docker-compose.test.yml

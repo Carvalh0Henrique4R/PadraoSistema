@@ -1,5 +1,6 @@
 import type { PatternInput } from "@padraosistema/lib";
 import type { AppDb } from "~/db/index";
+import { logAction } from "~/modules/logs/log.service";
 import { applyPatternUpdateWithVersioning } from "~/modules/patternVersions/patternVersions.applyUpdate.service";
 import { PatternForbiddenError, PatternNotFoundError } from "./patterns.errors";
 import {
@@ -36,7 +37,16 @@ export const createPatternForUser = async (params: {
     input: params.input,
     userId: params.userId,
   });
-  return mapRowToApiPattern(row);
+  const pattern = mapRowToApiPattern(row);
+  await logAction({
+    action: "CREATE_PATTERN",
+    database: params.database,
+    entity: "pattern",
+    entityId: pattern.id,
+    metadata: { category: pattern.category, title: pattern.title },
+    userId: params.userId,
+  });
+  return pattern;
 };
 
 export const updatePatternForUser = async (params: {
@@ -45,12 +55,43 @@ export const updatePatternForUser = async (params: {
   input: PatternInput;
   userId: string;
 }): Promise<ReturnType<typeof mapRowToApiPattern>> => {
-  return applyPatternUpdateWithVersioning({
+  const result = await applyPatternUpdateWithVersioning({
     database: params.database,
     editorUserId: params.userId,
     input: params.input,
     patternId: params.id,
   });
+  if (result.createdVersionSnapshot) {
+    await logAction({
+      action: "CREATE_VERSION",
+      database: params.database,
+      entity: "pattern",
+      entityId: params.id,
+      metadata: {
+        fromVersion: result.fromVersion ?? null,
+        toVersion: result.toVersion ?? null,
+      },
+      userId: params.userId,
+    });
+    await logAction({
+      action: "UPDATE_PATTERN",
+      database: params.database,
+      entity: "pattern",
+      entityId: params.id,
+      metadata: { version: result.pattern.version },
+      userId: params.userId,
+    });
+  } else {
+    await logAction({
+      action: "UPDATE_PATTERN",
+      database: params.database,
+      entity: "pattern",
+      entityId: params.id,
+      metadata: { unchanged: true },
+      userId: params.userId,
+    });
+  }
+  return result.pattern;
 };
 
 export const deletePatternForUser = async (params: { database: AppDb; id: string; userId: string }): Promise<void> => {
@@ -65,4 +106,12 @@ export const deletePatternForUser = async (params: { database: AppDb; id: string
   if (deleted == null) {
     throw new PatternNotFoundError();
   }
+  await logAction({
+    action: "DELETE_PATTERN",
+    database: params.database,
+    entity: "pattern",
+    entityId: params.id,
+    metadata: { title: existing.title },
+    userId: params.userId,
+  });
 };

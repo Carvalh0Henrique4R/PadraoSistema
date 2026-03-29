@@ -15,6 +15,11 @@ export const patternApiSchema = z.object({
 
 export const patternListApiSchema = z.array(patternApiSchema);
 
+export const patternImportResponseSchema = z.object({
+  created: z.number().int().nonnegative(),
+  success: z.literal(true),
+});
+
 export const uploadResponseSchema = z.object({
   url: z.string(),
 });

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { env } from "../env/env";
 
 const errorResponseSchema = z.object({
+  index: z.number().optional(),
   message: z.unknown().optional(),
 });
 
@@ -57,10 +58,11 @@ const parseErrorMessage = async (response: Response, isJson: boolean): Promise<s
   const parsed = errorResponseSchema.safeParse(body);
   if (parsed.success && parsed.data.message != null) {
     const msg = parsed.data.message;
-    if (typeof msg === "string") {
-      return msg;
+    const base = typeof msg === "string" ? msg : JSON.stringify(msg);
+    if (parsed.data.index != null) {
+      return `${base} (item ${String(parsed.data.index + 1)})`;
     }
-    return JSON.stringify(msg);
+    return base;
   }
   return response.statusText;
 };

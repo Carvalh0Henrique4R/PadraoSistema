@@ -6,12 +6,12 @@ type Params = {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const usePadroesHeaderAccountMenuDismiss = (params: Params): void => {
+export const usePadroesHeaderDropdownDismiss = (params: Params): void => {
   const { open, rootRef, setOpen } = params;
 
   React.useEffect(() => {
     if (!open) {
-      return;
+      return undefined;
     }
     const onPointerDown = (event: PointerEvent): void => {
       const root = rootRef.current;

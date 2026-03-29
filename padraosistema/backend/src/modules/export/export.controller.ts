@@ -1,24 +1,28 @@
 import { Hono } from "hono";
-import type { MiddlewareHandler } from "hono";
 import { tryCatchAsync } from "@padraosistema/lib";
 import { requireAuth } from "~/middlewares/requireAuth";
+import { recordExportHistory } from "~/modules/export-history/export-history.actions";
+import { registerExportHistoryRoutes } from "~/modules/export-history/export-history.controller";
 import type { AppVariables } from "~/types/app";
 import { exportPatternsZip } from "./export.actions";
 import { ExportPatternsInvalidSelectionError } from "./export.errors";
+import type { ExportRouteAuthOptions } from "./export.routeOptions";
 import { exportRequestSchema, firstZodMessage } from "./export.schema";
 
-export type RegisterExportRoutesOptions = {
-  authenticate: MiddlewareHandler<{ Variables: AppVariables }> | undefined;
-};
+export type RegisterExportRoutesOptions = ExportRouteAuthOptions;
 
 export const registerExportRoutes = (
   app: Hono<{ Variables: AppVariables }>,
-  options?: RegisterExportRoutesOptions,
+  options?: ExportRouteAuthOptions,
 ): void => {
   const authenticate = options?.authenticate ?? requireAuth;
 
   app.post("/", authenticate, async (c) => {
     const database = c.get("db");
+    const user = c.get("user");
+    if (user == null) {
+      return c.json({ message: "Unauthorized" }, 401);
+    }
     const [jsonBody, jsonErr] = await tryCatchAsync(() => c.req.json());
     if (jsonErr != null) {
       return c.json({ message: "Corpo da requisição inválido" }, 400);
@@ -39,6 +43,16 @@ export const registerExportRoutes = (
       }
       throw zipErr;
     }
+    const [_, histErr] = await tryCatchAsync(() =>
+      recordExportHistory({
+        database,
+        patternIds: parsed.data.patternIds,
+        userId: user.id,
+      }),
+    );
+    if (histErr != null) {
+      throw histErr;
+    }
     const zipBody = new Uint8Array(bytes);
     return new Response(zipBody, {
       headers: {
@@ -53,5 +67,6 @@ export const registerExportRoutes = (
 export const createExportApp = (): Hono<{ Variables: AppVariables }> => {
   const exportApp = new Hono<{ Variables: AppVariables }>();
   registerExportRoutes(exportApp);
+  registerExportHistoryRoutes(exportApp);
   return exportApp;
 };

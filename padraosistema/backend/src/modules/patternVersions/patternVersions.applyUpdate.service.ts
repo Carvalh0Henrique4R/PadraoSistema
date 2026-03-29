@@ -5,12 +5,19 @@ import { mapRowToApiPattern, patternContentUnchanged, updatePatternRowWithVersio
 import { loadLockedPatternForVersioning } from "./patternVersions.applyUpdate.helpers";
 import { insertPatternVersionSnapshot } from "./patternVersions.repository";
 
+export type ApplyPatternUpdateWithVersioningResult = {
+  createdVersionSnapshot: boolean;
+  fromVersion?: number;
+  pattern: Pattern;
+  toVersion?: number;
+};
+
 export const applyPatternUpdateWithVersioning = async (params: {
   database: AppDb;
   editorUserId: string;
   input: PatternInput;
   patternId: string;
-}): Promise<Pattern> => {
+}): Promise<ApplyPatternUpdateWithVersioningResult> => {
   return params.database.transaction(async (tx) => {
     const locked = await loadLockedPatternForVersioning({
       database: tx,
@@ -18,7 +25,7 @@ export const applyPatternUpdateWithVersioning = async (params: {
       patternId: params.patternId,
     });
     if (patternContentUnchanged({ existing: locked, input: params.input })) {
-      return mapRowToApiPattern(locked);
+      return { createdVersionSnapshot: false, pattern: mapRowToApiPattern(locked) };
     }
     const archivedAt = new Date();
     await insertPatternVersionSnapshot({
@@ -44,6 +51,11 @@ export const applyPatternUpdateWithVersioning = async (params: {
     if (updated == null) {
       throw new PatternNotFoundError();
     }
-    return mapRowToApiPattern(updated);
+    return {
+      createdVersionSnapshot: true,
+      fromVersion: locked.version,
+      pattern: mapRowToApiPattern(updated),
+      toVersion: nextVersion,
+    };
   });
 };

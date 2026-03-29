@@ -1,21 +1,36 @@
 import React from "react";
 
 type Props = {
+  layout?: "header" | "page" | "subheader";
   value: string;
   onValueChange: (value: string) => void;
 };
 
-export const PadroesPatternListSearchBar: React.FC<Props> = ({ value, onValueChange }) => {
+export const PadroesPatternListSearchBar: React.FC<Props> = ({
+  layout = "page",
+  value,
+  onValueChange,
+}) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     onValueChange(event.target.value);
   };
 
+  const isToolbar = layout === "header" || layout === "subheader";
+
+  const outerClass = isToolbar
+    ? "flex min-w-0 w-full flex-1 flex-col gap-0"
+    : "flex flex-col gap-2 px-6 pt-6";
+
+  const innerPadding = isToolbar ? "px-3 py-2" : "px-4 py-3";
+
   return (
-    <div className="flex flex-col gap-2 px-6 pt-6">
+    <div className={outerClass}>
       <label htmlFor="busca-padroes" className="sr-only">
         Buscar padrões
       </label>
-      <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-slate-900/80 px-4 py-3">
+      <div
+        className={`flex items-center gap-3 rounded-lg border border-white/10 bg-slate-900/80 transition-colors duration-150 hover:border-white/15 ${innerPadding}`}
+      >
         <span className="text-slate-500" aria-hidden>
           🔍
         </span>

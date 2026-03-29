@@ -9,6 +9,7 @@ import {
   raise,
   SYSTEM_MESSAGE_CREATED,
   SYSTEM_MESSAGE_DELETED,
+  SYSTEM_MESSAGE_IMPORTED,
   SYSTEM_MESSAGE_UPDATED,
   type Pattern,
   type PatternInput,
@@ -21,6 +22,7 @@ import {
   deletePattern,
   getPattern,
   getPatternVersion,
+  importPatterns,
   listPatterns,
   listPatternVersions,
   updatePattern,
@@ -51,6 +53,22 @@ export const usePatternQuery = (id: string): UseQueryResult<Pattern> => {
   return useQuery<Pattern>({
     queryKey: [...PATTERNS_QUERY_KEY, id],
     queryFn: () => getPattern(id),
+  });
+};
+
+export const useImportPatternsMutation = (): UseMutationResult<
+  { created: number; success: true },
+  Error,
+  unknown
+> => {
+  const queryClient = useQueryClient();
+  const { showSuccess } = useFlashMessage();
+  return useMutation({
+    mutationFn: (payload: unknown) => importPatterns(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: PATTERNS_QUERY_KEY });
+      showSuccess(SYSTEM_MESSAGE_IMPORTED);
+    },
   });
 };
 
