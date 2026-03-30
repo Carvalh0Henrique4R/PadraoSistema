@@ -22,7 +22,7 @@ type Props = {
 export const PadroesSidebarStatusSection: React.FC<Props> = ({ patterns }) => {
   return (
     <div className="flex flex-col gap-2">
-      <p className="px-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Status</p>
+      <p className="px-2 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-500">Status</p>
       <ul className="flex flex-col gap-2">
         {statusOrder.map((status) => (
           <PadroesSidebarStatusRow

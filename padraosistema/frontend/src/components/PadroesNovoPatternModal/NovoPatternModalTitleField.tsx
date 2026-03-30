@@ -9,13 +9,13 @@ type Props = {
 export const NovoPatternModalTitleField: React.FC<Props> = ({ register }) => {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="padrao-titulo" className="text-sm text-slate-300">
+      <label htmlFor="padrao-titulo" className="text-sm text-slate-700 dark:text-slate-300">
         Título
       </label>
       <input
         id="padrao-titulo"
         type="text"
-        className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-950 dark:text-white"
         {...register("title", { required: true })}
       />
     </div>

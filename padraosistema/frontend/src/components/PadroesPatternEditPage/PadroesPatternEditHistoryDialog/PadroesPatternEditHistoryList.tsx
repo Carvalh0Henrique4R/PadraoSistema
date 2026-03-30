@@ -10,13 +10,13 @@ type Props = {
 
 export const PadroesPatternEditHistoryList: React.FC<Props> = ({ items, onSelectVersion, state }) => {
   if (state === "loading") {
-    return <p className="text-sm text-slate-400">Carregando versões...</p>;
+    return <p className="text-sm text-slate-600 dark:text-slate-400">Carregando versões...</p>;
   }
   if (state === "error") {
-    return <p className="text-sm text-red-400">Não foi possível carregar o histórico.</p>;
+    return <p className="text-sm text-red-600 dark:text-red-400">Não foi possível carregar o histórico.</p>;
   }
   if (items == null || items.length === 0) {
-    return <p className="text-sm text-slate-400">Nenhuma versão anterior arquivada.</p>;
+    return <p className="text-sm text-slate-600 dark:text-slate-400">Nenhuma versão anterior arquivada.</p>;
   }
   return (
     <div className="flex flex-col gap-2 overflow-y-auto pb-2">

@@ -29,9 +29,9 @@ export const PadroesPatternListSearchBar: React.FC<Props> = ({
         Buscar padrões
       </label>
       <div
-        className={`flex items-center gap-3 rounded-lg border border-white/10 bg-slate-900/80 transition-colors duration-150 hover:border-white/15 ${innerPadding}`}
+        className={`flex items-center gap-3 rounded-lg border border-slate-200 bg-white transition-colors duration-150 hover:border-slate-300 dark:border-white/10 dark:bg-slate-900/80 dark:hover:border-white/15 ${innerPadding}`}
       >
-        <span className="text-slate-500" aria-hidden>
+        <span className="text-slate-500 dark:text-slate-500" aria-hidden>
           🔍
         </span>
         <input
@@ -40,7 +40,7 @@ export const PadroesPatternListSearchBar: React.FC<Props> = ({
           placeholder="Buscar padrões..."
           value={value}
           onChange={handleChange}
-          className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+          className="min-w-0 flex-1 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-500 dark:text-white"
         />
       </div>
     </div>

@@ -34,17 +34,17 @@ export const PadroesHeader: React.FC<Props> = ({
   const showSubHeader = listSearch != null || showNovoButton;
 
   return (
-    <header className="flex shrink-0 flex-col border-b border-white/10">
+    <header className="flex shrink-0 flex-col border-b border-slate-200 dark:border-white/10">
       <div className="flex flex-wrap items-start justify-between gap-4 px-6 py-4">
         <div className="flex min-w-0 max-w-full items-start gap-3">
-          <div className="flex shrink-0 flex-col gap-0.5 rounded-lg bg-indigo-500/20 p-2" aria-hidden>
-            <span className="block h-1 rounded-sm bg-indigo-400/80" />
-            <span className="block h-1 rounded-sm bg-indigo-400/60" />
-            <span className="block h-1 rounded-sm bg-indigo-400/40" />
+          <div className="flex shrink-0 flex-col gap-0.5 rounded-lg bg-indigo-500/15 p-2 dark:bg-indigo-500/20" aria-hidden>
+            <span className="block h-1 rounded-sm bg-indigo-500/70 dark:bg-indigo-400/80" />
+            <span className="block h-1 rounded-sm bg-indigo-500/50 dark:bg-indigo-400/60" />
+            <span className="block h-1 rounded-sm bg-indigo-500/35 dark:bg-indigo-400/40" />
           </div>
           <div className="flex min-w-0 flex-col gap-1">
-            <h1 className="text-xl font-semibold text-white">Padrões de Sistema</h1>
-            <p className="text-sm text-slate-400">Documentação centralizada de padrões e componentes.</p>
+            <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Padrões de Sistema</h1>
+            <p className="text-sm text-slate-600 dark:text-slate-400">Documentação centralizada de padrões e componentes.</p>
           </div>
         </div>
 
@@ -56,7 +56,7 @@ export const PadroesHeader: React.FC<Props> = ({
               onImportPatterns={onImportPatterns}
             />
           ) : null}
-          <span className="shrink-0 rounded-full border border-white/10 bg-slate-900/80 px-3 py-1.5 text-sm text-slate-300">
+          <span className="shrink-0 rounded-full border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm text-slate-700 dark:border-white/10 dark:bg-slate-900/80 dark:text-slate-300">
             {patternCount} padrões
           </span>
           {showLoggedInChrome && userDisplayName !== null ? (
@@ -69,7 +69,7 @@ export const PadroesHeader: React.FC<Props> = ({
       </div>
 
       {showSubHeader ? (
-        <div className="flex flex-wrap items-center gap-3 border-t border-white/10 px-6 py-3">
+        <div className="flex flex-wrap items-center gap-3 border-t border-slate-200 px-6 py-3 dark:border-white/10">
           <div className="min-w-0 flex-1">
             {listSearch != null ? (
               <PadroesPatternListSearchBar
@@ -92,7 +92,7 @@ export const PadroesHeader: React.FC<Props> = ({
       ) : null}
 
       {exportZipError === null ? null : (
-        <p className="px-6 pb-3 text-end text-xs text-red-400">{exportZipError}</p>
+        <p className="px-6 pb-3 text-end text-xs text-red-600 dark:text-red-400">{exportZipError}</p>
       )}
     </header>
   );

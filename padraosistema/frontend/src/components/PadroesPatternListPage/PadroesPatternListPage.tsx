@@ -38,11 +38,17 @@ export const PadroesPatternListPage: React.FC<Props> = ({ categorySlug }) => {
   useRegisterPadroesListSearchInHeader(search, handleSearchValueChange);
 
   if (isLoading) {
-    return <div className="flex flex-1 items-center justify-center p-6 text-slate-400">Carregando...</div>;
+    return (
+      <div className="flex flex-1 items-center justify-center p-6 text-slate-600 dark:text-slate-400">Carregando...</div>
+    );
   }
 
   if (isError || patterns == null) {
-    return <div className="flex flex-1 items-center justify-center p-6 text-red-400">Erro ao carregar padrões.</div>;
+    return (
+      <div className="flex flex-1 items-center justify-center p-6 text-red-600 dark:text-red-400">
+        Erro ao carregar padrões.
+      </div>
+    );
   }
 
   const filtered = filterPatterns({ categorySlug, patterns, search });

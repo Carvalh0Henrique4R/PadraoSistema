@@ -37,10 +37,14 @@ export const LoginFormCardView: React.FC<Props> = ({
   toggleMode,
 }) => {
   return (
-    <div className="flex w-full max-w-md flex-col gap-6 rounded-xl border border-white/10 bg-slate-900/80 p-8">
-      <h1 className="text-center text-2xl font-semibold">{mode === "login" ? "Entrar" : "Criar conta"}</h1>
+    <div className="flex w-full max-w-md flex-col gap-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm shadow-slate-200/50 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-none">
+      <h1 className="text-center text-2xl font-semibold text-slate-900 dark:text-white">
+        {mode === "login" ? "Entrar" : "Criar conta"}
+      </h1>
       {message.length === 0 ? null : (
-        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">{message}</p>
+        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+          {message}
+        </p>
       )}
       <form className="flex flex-col gap-4" onSubmit={onSubmit}>
         {mode === "register" ? <LoginRegisterNameField name={name} setName={setName} /> : null}
@@ -55,14 +59,18 @@ export const LoginFormCardView: React.FC<Props> = ({
         </button>
       </form>
       <button
-        className="flex flex-row items-center justify-center gap-2 rounded-lg border border-white/15 bg-white py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100"
+        className="flex flex-row items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100 dark:border-white/15"
         onClick={handleGoogleClick}
         type="button"
       >
         <GoogleMark />
         Entrar com Google
       </button>
-      <button className="text-center text-sm text-indigo-300 hover:text-indigo-200" onClick={toggleMode} type="button">
+      <button
+        className="text-center text-sm text-indigo-700 hover:text-indigo-600 dark:text-indigo-300 dark:hover:text-indigo-200"
+        onClick={toggleMode}
+        type="button"
+      >
         {mode === "login" ? "Criar uma conta" : "Já tenho conta"}
       </button>
     </div>

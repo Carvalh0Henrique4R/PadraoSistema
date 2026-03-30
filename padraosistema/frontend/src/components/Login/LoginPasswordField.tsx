@@ -13,11 +13,11 @@ export const LoginPasswordField: React.FC<Props> = ({ mode, password, setPasswor
     setPassword(ev.target.value);
   };
   return (
-    <label className="flex flex-col gap-1 text-sm text-slate-300" htmlFor="login-password">
+    <label className="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300" htmlFor="login-password">
       Senha
       <input
         autoComplete={mode === "register" ? "new-password" : "current-password"}
-        className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-indigo-500"
+        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-950 dark:text-white"
         id="login-password"
         value={password}
         minLength={8}

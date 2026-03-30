@@ -7,7 +7,7 @@ type Props = {
 
 export const CartDrawerExportFooter: React.FC<Props> = ({ disabled, onExportClick }) => {
   return (
-    <div className="flex shrink-0 flex-col gap-2 border-t border-white/10 px-5 py-4">
+    <div className="flex shrink-0 flex-col gap-2 border-t border-slate-200 px-5 py-4 dark:border-white/10">
       <button
         type="button"
         disabled={disabled}

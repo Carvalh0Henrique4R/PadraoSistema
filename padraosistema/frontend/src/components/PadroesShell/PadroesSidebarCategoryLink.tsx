@@ -24,7 +24,9 @@ export const PadroesSidebarCategoryLink: React.FC<Props> = ({ icon, pathname, sl
       to="/patterns/$segment"
       className={cn(
         "flex items-center gap-2 rounded-lg px-3 py-2 text-sm",
-        isCategoryActive ? "bg-white/10 text-white" : "text-slate-400 hover:bg-white/5 hover:text-slate-200",
+        isCategoryActive
+          ? "bg-slate-200 text-slate-900 dark:bg-white/10 dark:text-white"
+          : "text-slate-600 hover:bg-slate-200/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-slate-200",
       )}
     >
       <Icon aria-hidden className={navIconClass} data-lucide={dataLucide} />

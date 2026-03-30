@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 html,
 body,
 #root {
@@ -7,9 +9,18 @@ body,
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background: linear-gradient(145deg, #1e1b4b 0%, #000000 100%);
   margin: 0;
   padding: 0;
+}
+
+html {
+  background: linear-gradient(145deg, #e8eeff 0%, #f8fafc 100%);
+}
+
+html.dark,
+html.dark body,
+html.dark #root {
+  background: linear-gradient(145deg, #1e1b4b 0%, #000000 100%);
 }
 
 div,

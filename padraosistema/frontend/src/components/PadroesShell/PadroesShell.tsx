@@ -11,7 +11,7 @@ export const PadroesShell: React.FC<Props> = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-slate-950 text-slate-300">
+      <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-slate-50 text-slate-600 dark:bg-slate-950 dark:text-slate-300">
         Carregando padrões...
       </div>
     );
@@ -19,7 +19,7 @@ export const PadroesShell: React.FC<Props> = ({ children }) => {
 
   if (isError || patterns == null) {
     return (
-      <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-slate-950 text-red-400">
+      <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-slate-50 text-red-600 dark:bg-slate-950 dark:text-red-400">
         Erro ao carregar padrões.
       </div>
     );
