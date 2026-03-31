@@ -3,6 +3,7 @@ import { raise, tryCatchAsync } from "@padraosistema/lib";
 import { requireAuth } from "~/middlewares/requireAuth";
 import type { AppVariables } from "~/types/app";
 import { registerPatternVersionRoutes } from "~/modules/patternVersions/patternVersions.controller";
+import { importMarkdownPatternsForUser } from "./import-markdown/import-markdown.actions";
 import { importPatternsForUser } from "./import/patterns.import.actions";
 import {
   createPatternForUser,
@@ -28,12 +29,36 @@ export const registerPatternRoutes = (app: Hono<{ Variables: AppVariables }>): v
       database,
       userId: user.id,
     });
-    if (!result.ok) {
-      const payload =
-        result.index != null ? { index: result.index, message: result.message } : { message: result.message };
-      return c.json(payload, 400);
+    if (result.ok) {
+      return c.json({ created: result.created, success: true });
     }
-    return c.json({ created: result.created, success: true });
+    if (result.index == null) {
+      return c.json({ message: result.message }, 400);
+    }
+    return c.json({ index: result.index, message: result.message }, 400);
+  });
+
+  app.post("/import/markdown", requireAuth, async (c) => {
+    const database = c.get("db");
+    const user = c.get("user") ?? raise("Missing authenticated user");
+    const [formData, fdErr] = await tryCatchAsync(() => c.req.formData());
+    if (fdErr != null) {
+      return c.json({ message: "Formulário inválido" }, 400);
+    }
+    const entries = formData.getAll("file");
+    const files = entries.filter((item): item is File => item instanceof File);
+    const result = await importMarkdownPatternsForUser({
+      database,
+      files,
+      userId: user.id,
+    });
+    if (result.ok) {
+      return c.json({ created: result.created, success: true });
+    }
+    if ("index" in result) {
+      return c.json({ index: result.index, message: result.message }, 400);
+    }
+    return c.json({ message: result.message }, 400);
   });
 
   registerPatternVersionRoutes(app);

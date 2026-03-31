@@ -11,6 +11,7 @@ import {
   SYSTEM_MESSAGE_DELETED,
   SYSTEM_MESSAGE_IMPORTED,
   SYSTEM_MESSAGE_UPDATED,
+  SYSTEM_MESSAGE_VERSION_REVERTED,
   type Pattern,
   type PatternInput,
   type PatternVersionDetail,
@@ -23,8 +24,10 @@ import {
   getPattern,
   getPatternVersion,
   importPatterns,
+  importPatternsMarkdown,
   listPatterns,
   listPatternVersions,
+  revertPatternToVersion,
   updatePattern,
 } from "./patterns";
 
@@ -37,10 +40,13 @@ const patternVersionsKey = (patternId: string): [string, string, string, string]
   "list",
 ];
 
-const patternVersionDetailKey = (
-  patternId: string,
-  version: number,
-): [string, string, string, string, number] => ["patterns", patternId, "versions", "detail", version];
+const patternVersionDetailKey = (patternId: string, version: number): [string, string, string, string, number] => [
+  "patterns",
+  patternId,
+  "versions",
+  "detail",
+  version,
+];
 
 export const usePatternsQuery = (): UseQueryResult<Pattern[]> => {
   return useQuery<Pattern[]>({
@@ -56,15 +62,27 @@ export const usePatternQuery = (id: string): UseQueryResult<Pattern> => {
   });
 };
 
-export const useImportPatternsMutation = (): UseMutationResult<
-  { created: number; success: true },
-  Error,
-  unknown
-> => {
+export const useImportPatternsMutation = (): UseMutationResult<{ created: number; success: true }, Error, unknown> => {
   const queryClient = useQueryClient();
   const { showSuccess } = useFlashMessage();
   return useMutation({
     mutationFn: (payload: unknown) => importPatterns(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: PATTERNS_QUERY_KEY });
+      showSuccess(SYSTEM_MESSAGE_IMPORTED);
+    },
+  });
+};
+
+export const useImportMarkdownPatternsMutation = (): UseMutationResult<
+  { created: number; success: true },
+  Error,
+  File[]
+> => {
+  const queryClient = useQueryClient();
+  const { showSuccess } = useFlashMessage();
+  return useMutation({
+    mutationFn: (files: File[]) => importPatternsMarkdown(files),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: PATTERNS_QUERY_KEY });
       showSuccess(SYSTEM_MESSAGE_IMPORTED);
@@ -126,6 +144,26 @@ export const usePatternVersionQuery = (params: UsePatternVersionQueryParams): Us
     enabled: canFetch,
     queryFn: () => getPatternVersion(params.patternId, version ?? raise("Pattern version query disabled")),
     queryKey,
+  });
+};
+
+export const useRevertPatternVersionMutation = (): UseMutationResult<
+  Pattern,
+  Error,
+  { patternId: string; versionId: string }
+> => {
+  const queryClient = useQueryClient();
+  const { showSuccess } = useFlashMessage();
+  return useMutation({
+    mutationFn: (vars: { patternId: string; versionId: string }) =>
+      revertPatternToVersion(vars.patternId, vars.versionId),
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData<Pattern>([...PATTERNS_QUERY_KEY, variables.patternId], data);
+      void queryClient.invalidateQueries({ queryKey: PATTERNS_QUERY_KEY });
+      void queryClient.invalidateQueries({ queryKey: [...PATTERNS_QUERY_KEY, variables.patternId] });
+      void queryClient.invalidateQueries({ queryKey: ["patterns", variables.patternId, "versions"] });
+      showSuccess(SYSTEM_MESSAGE_VERSION_REVERTED);
+    },
   });
 };
 

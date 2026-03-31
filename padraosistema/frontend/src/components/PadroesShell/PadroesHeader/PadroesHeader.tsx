@@ -1,4 +1,5 @@
 import React from "react";
+import { Layers } from "lucide-react";
 import { PadroesPatternListSearchBar } from "~/components/PadroesPatternListPage/PadroesPatternListSearchBar";
 import { useCart } from "~/hooks/useCart";
 import { usePadroesShellListSearchRegistration } from "../PadroesShellListSearchContext";
@@ -37,14 +38,17 @@ export const PadroesHeader: React.FC<Props> = ({
     <header className="flex shrink-0 flex-col border-b border-slate-200 dark:border-white/10">
       <div className="flex flex-wrap items-start justify-between gap-4 px-6 py-4">
         <div className="flex min-w-0 max-w-full items-start gap-3">
-          <div className="flex shrink-0 flex-col gap-0.5 rounded-lg bg-indigo-500/15 p-2 dark:bg-indigo-500/20" aria-hidden>
-            <span className="block h-1 rounded-sm bg-indigo-500/70 dark:bg-indigo-400/80" />
-            <span className="block h-1 rounded-sm bg-indigo-500/50 dark:bg-indigo-400/60" />
-            <span className="block h-1 rounded-sm bg-indigo-500/35 dark:bg-indigo-400/40" />
+          <div
+            className="flex shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 p-2 dark:bg-indigo-500/20"
+            aria-hidden
+          >
+            <Layers className="h-8 w-8 shrink-0 text-indigo-600 dark:text-indigo-400" strokeWidth={1.75} />
           </div>
           <div className="flex min-w-0 flex-col gap-1">
             <h1 className="text-xl font-semibold text-slate-900 dark:text-white">Padrões de Sistema</h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Documentação centralizada de padrões e componentes.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Documentação centralizada de padrões e componentes.
+            </p>
           </div>
         </div>
 

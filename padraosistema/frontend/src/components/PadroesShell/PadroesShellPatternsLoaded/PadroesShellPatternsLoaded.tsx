@@ -5,6 +5,7 @@ import React from "react";
 import { exportHistoryQueryKey } from "~/api/exportHistory";
 import { ImportModal } from "~/components/ImportModal/ImportModal";
 import { useFlashMessage } from "~/context/FlashMessageContext";
+import { usePadroesShellImportModal } from "./usePadroesShellImportModal";
 import { useCart } from "~/hooks/useCart";
 import { usePatternCartZipExport } from "~/hooks/usePatternCartZipExport";
 import { useSession } from "~/hooks/useSession";
@@ -25,7 +26,6 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
   const navigate = useNavigate();
   const isLoggedIn = status === "authenticated";
   const userDisplayName = padroesShellUserDisplayName(status, session);
-  const [importModalOpen, setImportModalOpen] = React.useState(false);
   const { clearCart, items } = useCart();
   const { showSuccess } = useFlashMessage();
 
@@ -40,17 +40,7 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
     showSuccess,
   });
 
-  const handleOpenImport = React.useCallback((): void => {
-    if (!isLoggedIn) {
-      void navigate({ search: { redirect: "/patterns/" }, to: "/login" });
-      return;
-    }
-    setImportModalOpen(true);
-  }, [isLoggedIn, navigate]);
-
-  const handleCloseImport = React.useCallback((): void => {
-    setImportModalOpen(false);
-  }, []);
+  const importModal = usePadroesShellImportModal(isLoggedIn, navigate);
 
   const handleOpenNovo = React.useCallback((): void => {
     if (!isLoggedIn) {
@@ -73,7 +63,7 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
             showNovoButton={isLoggedIn}
             userDisplayName={userDisplayName}
             onExportZip={handleExportClick}
-            onImportPatterns={handleOpenImport}
+            onImportPatterns={importModal.handleOpenImport}
             onNovoPadrao={handleOpenNovo}
           />
           <div className="flex min-h-0 flex-1">
@@ -82,7 +72,11 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
           </div>
         </div>
       </PadroesShellListSearchProvider>
-      <ImportModal open={importModalOpen} onClose={handleCloseImport} />
+      <ImportModal
+        key={importModal.importModalKey}
+        open={importModal.importModalOpen}
+        onClose={importModal.handleCloseImport}
+      />
     </PadroesShellContext.Provider>
   );
 };

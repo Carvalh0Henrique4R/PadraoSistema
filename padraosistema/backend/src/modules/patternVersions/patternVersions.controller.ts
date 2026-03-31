@@ -6,8 +6,11 @@ import { firstZodMessage } from "~/modules/patterns/patterns.schema";
 import { getPatternVersionForUser, listPatternVersionsForUser } from "./patternVersions.actions";
 import { patternVersionDetailParamsSchema, patternVersionListParamsSchema } from "./patternVersions.schema";
 import { respondIfPatternVersionRouteError } from "./patternVersions.routeErrors";
+import { handlePostRevertPatternVersion } from "./patternVersions.revert.handler";
 
 export const registerPatternVersionRoutes = (app: Hono<{ Variables: AppVariables }>): void => {
+  app.post("/:id/revert", requireAuth, handlePostRevertPatternVersion);
+
   app.get("/:id/versions/:versionNumber", requireAuth, async (c) => {
     const database = c.get("db");
     const user = c.get("user") ?? raise("Missing authenticated user");

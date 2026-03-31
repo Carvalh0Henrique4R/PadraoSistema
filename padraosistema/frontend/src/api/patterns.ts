@@ -1,5 +1,5 @@
 import type { Pattern, PatternInput, PatternVersionDetail, PatternVersionListItem } from "@padraosistema/lib";
-import { isKey, objectKeys, raise } from "@padraosistema/lib";
+import { objectEntries, raise } from "@padraosistema/lib";
 import { apiFetch } from "./client.util";
 import {
   patternApiSchema,
@@ -28,14 +28,44 @@ export const getPattern = async (id: string): Promise<Pattern> => {
   return parsed.data;
 };
 
+export const importPatternsMarkdown = async (files: File[]): Promise<{ created: number; success: true }> => {
+  const formData = files.reduce((acc, file) => {
+    acc.append("file", file);
+    return acc;
+  }, new FormData());
+  const res = await apiFetch("/api/patterns/import/markdown", {
+    body: formData,
+    method: "POST",
+  });
+  const parsed = patternImportResponseSchema.safeParse(res);
+  if (!parsed.success) {
+    throw new Error("Resposta de importação Markdown inválida");
+  }
+  return parsed.data;
+};
+
+const buildPatternImportRequestBody = (payload: unknown): { data: unknown } => {
+  if (payload === null) {
+    return { data: payload };
+  }
+  if (typeof payload !== "object") {
+    return { data: payload };
+  }
+  if (Array.isArray(payload)) {
+    return { data: payload };
+  }
+  const entries = objectEntries(payload);
+  if (entries.length === 1) {
+    const first = entries[0];
+    if (first[0] === "data") {
+      return { data: first[1] };
+    }
+  }
+  return { data: payload };
+};
+
 export const importPatterns = async (payload: unknown): Promise<{ created: number; success: true }> => {
-  const isWrappedBody =
-    payload !== null &&
-    typeof payload === "object" &&
-    !Array.isArray(payload) &&
-    isKey(payload, "data") &&
-    objectKeys(payload).length === 1;
-  const bodyObject = isWrappedBody ? (payload as { data: unknown }) : { data: payload };
+  const bodyObject = buildPatternImportRequestBody(payload);
   const res = await apiFetch("/api/patterns/import", {
     body: JSON.stringify(bodyObject),
     method: "POST",
@@ -86,14 +116,23 @@ export const listPatternVersions = async (patternId: string): Promise<PatternVer
   return parsed.data;
 };
 
-export const getPatternVersion = async (
-  patternId: string,
-  version: number,
-): Promise<PatternVersionDetail> => {
+export const getPatternVersion = async (patternId: string, version: number): Promise<PatternVersionDetail> => {
   const data = await apiFetch(`/api/patterns/${patternId}/versions/${String(version)}`);
   const parsed = patternVersionDetailApiSchema.safeParse(data);
   if (!parsed.success) {
     throw new Error("Resposta da versão do padrão inválida");
+  }
+  return parsed.data;
+};
+
+export const revertPatternToVersion = async (patternId: string, versionId: string): Promise<Pattern> => {
+  const data = await apiFetch(`/api/patterns/${patternId}/revert`, {
+    body: JSON.stringify({ versionId }),
+    method: "POST",
+  });
+  const parsed = patternApiSchema.safeParse(data);
+  if (!parsed.success) {
+    throw new Error("Resposta de reversão de versão inválida");
   }
   return parsed.data;
 };

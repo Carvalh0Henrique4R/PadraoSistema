@@ -28,6 +28,7 @@ export const patternVersionListItemSchema = z.object({
   authorName: z.string(),
   createdAt: z.string(),
   createdBy: z.uuid(),
+  id: z.uuid(),
   title: z.string(),
   version: z.number().int().positive(),
 });
@@ -40,6 +41,7 @@ export const patternVersionDetailApiSchema = z.object({
   content: z.string(),
   createdAt: z.string(),
   createdBy: z.uuid(),
+  id: z.uuid(),
   status: patternStatusApiSchema,
   title: z.string(),
   version: z.number().int().positive(),

@@ -19,12 +19,13 @@ export const ExportHistoryPage: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 px-6 py-8">
-      <div className="flex flex-col gap-2">
+      <div className="flex col-3 gap-3">
         <Link
+          type="button"
+          className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5"
           to="/patterns"
-          className="w-fit text-sm font-medium text-indigo-700 hover:text-indigo-600 dark:text-indigo-300 dark:hover:text-indigo-200"
         >
-          Voltar aos padrões
+          ← Voltar
         </Link>
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Histórico de exportação</h2>
       </div>

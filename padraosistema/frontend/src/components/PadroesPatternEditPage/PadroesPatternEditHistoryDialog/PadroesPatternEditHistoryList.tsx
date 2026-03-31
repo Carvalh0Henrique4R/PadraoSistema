@@ -21,7 +21,7 @@ export const PadroesPatternEditHistoryList: React.FC<Props> = ({ items, onSelect
   return (
     <div className="flex flex-col gap-2 overflow-y-auto pb-2">
       {items.map((item) => (
-        <PadroesPatternEditHistoryListItem item={item} key={item.version} onSelect={onSelectVersion} />
+        <PadroesPatternEditHistoryListItem item={item} key={item.id} onSelect={onSelectVersion} />
       ))}
     </div>
   );

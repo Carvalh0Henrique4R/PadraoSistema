@@ -1,15 +1,42 @@
 import type { PatternVersionDetail } from "@padraosistema/lib";
 import React from "react";
+import { useRevertPatternVersionMutation } from "~/api/patterns.hooks";
+import { PadroesPatternEditHistoryRevertConfirmDialog } from "./PadroesPatternEditHistoryRevertConfirmDialog";
 
 type Props = {
   detail: PatternVersionDetail | undefined;
   onBack: () => void;
+  onReverted: () => void;
+  patternId: string;
   state: "error" | "loading" | "ready";
 };
 
-export const PadroesPatternEditHistoryDetail: React.FC<Props> = ({ detail, onBack, state }) => {
+export const PadroesPatternEditHistoryDetail: React.FC<Props> = ({ detail, onBack, onReverted, patternId, state }) => {
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
+  const revertMutation = useRevertPatternVersionMutation();
+
   const handleBackClick = (): void => {
     onBack();
+  };
+
+  const handleOpenConfirm = (): void => {
+    setConfirmOpen(true);
+  };
+
+  const handleCancelConfirm = (): void => {
+    setConfirmOpen(false);
+  };
+
+  const handleRevertSucceeded = React.useCallback((): void => {
+    setConfirmOpen(false);
+    onReverted();
+  }, [onReverted]);
+
+  const handleConfirmRevert = (): void => {
+    if (detail == null) {
+      return;
+    }
+    revertMutation.mutate({ patternId, versionId: detail.id }, { onSuccess: handleRevertSucceeded });
   };
 
   if (state === "loading") {
@@ -27,8 +54,17 @@ export const PadroesPatternEditHistoryDetail: React.FC<Props> = ({ detail, onBac
     timeStyle: "short",
   }).format(new Date(detail.createdAt));
 
+  const formErrorMessage =
+    revertMutation.isError && revertMutation.error instanceof Error ? revertMutation.error.message : null;
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
+    <div className="relative flex min-h-0 flex-1 flex-col gap-3">
+      <PadroesPatternEditHistoryRevertConfirmDialog
+        isOpen={confirmOpen}
+        isPending={revertMutation.isPending}
+        onCancel={handleCancelConfirm}
+        onConfirm={handleConfirmRevert}
+      />
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
@@ -40,7 +76,16 @@ export const PadroesPatternEditHistoryDetail: React.FC<Props> = ({ detail, onBac
         <span className="text-sm text-slate-600 dark:text-slate-400">
           v{detail.version} · {label} · {detail.authorName}
         </span>
+        <button
+          type="button"
+          className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-900 hover:bg-amber-100 disabled:opacity-50 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-100 dark:hover:bg-amber-900/50"
+          disabled={revertMutation.isPending}
+          onClick={handleOpenConfirm}
+        >
+          Reverter para esta versão
+        </button>
       </div>
+      {formErrorMessage != null ? <p className="text-sm text-red-600 dark:text-red-400">{formErrorMessage}</p> : null}
       <div className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 dark:border-white/10 dark:bg-slate-950/50">
         <span className="text-xs uppercase tracking-wide text-slate-600 dark:text-slate-500">Título</span>
         <span className="text-slate-900 dark:text-white">{detail.title}</span>

@@ -12,12 +12,8 @@ export type {
   PatternVersionListItem,
 } from "./types/pattern";
 export type { ExportHistory, ExportRequest, PatternCartState, PatternSummary } from "./types/export";
-export type {
-  SystemLogAction,
-  SystemLogEntity,
-  SystemLogMetadata,
-  SystemLogMetadataValue,
-} from "./types/systemLog";
+export type { ImportedMarkdownPattern } from "./types/importedMarkdownPattern";
+export type { SystemLogAction, SystemLogEntity, SystemLogMetadata, SystemLogMetadataValue } from "./types/systemLog";
 export { SYSTEM_LOG_ACTIONS, SYSTEM_LOG_ENTITIES } from "./types/systemLog";
 export {
   PATTERN_CATEGORY_LABELS,
@@ -26,16 +22,11 @@ export {
   isUuidSegment,
 } from "./patternCategories";
 export type { PatternCategorySlug } from "./patternCategories";
-export {
-  addItem,
-  clearPatternCart,
-  createEmptyPatternCart,
-  getItems,
-  removeItem,
-} from "./patternCart/patternCart";
+export { addItem, clearPatternCart, createEmptyPatternCart, getItems, removeItem } from "./patternCart/patternCart";
 export {
   SYSTEM_MESSAGE_CREATED,
   SYSTEM_MESSAGE_DELETED,
   SYSTEM_MESSAGE_IMPORTED,
   SYSTEM_MESSAGE_UPDATED,
+  SYSTEM_MESSAGE_VERSION_REVERTED,
 } from "./systemMessages";
