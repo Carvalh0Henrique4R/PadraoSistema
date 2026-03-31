@@ -1,4 +1,5 @@
 import React from "react";
+import { X } from "lucide-react";
 import { PATTERN_CATEGORY_LABELS, isPatternCategorySlug } from "~/constants/patternCategories";
 import { CartDrawerExportFooter } from "./CartDrawerExportFooter";
 import { CartDrawerItemList } from "./CartDrawerItemList";
@@ -42,10 +43,11 @@ export const CartDrawerView: React.FC<Props> = ({
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Carrinho</h2>
           <button
             type="button"
+            aria-label="Fechar"
+            className="flex shrink-0 items-center justify-center rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 dark:border-white/20 dark:text-slate-300 dark:hover:bg-white/5 dark:focus-visible:ring-indigo-400/80"
             onClick={handleCloseClick}
-            className="rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 dark:border-white/15 dark:text-slate-300 dark:hover:bg-white/5"
           >
-            Fechar
+            <X aria-hidden className="h-5 w-5" />
           </button>
         </div>
         <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto px-5 py-4">

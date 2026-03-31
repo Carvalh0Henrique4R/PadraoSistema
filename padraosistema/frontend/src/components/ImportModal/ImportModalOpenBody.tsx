@@ -39,15 +39,6 @@ export const ImportModalOpenBody: React.FC<Props> = ({ c }) => {
           submitError={c.submitErrorMarkdown}
         />
       )}
-      <div className="flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3 dark:border-white/10">
-        <button
-          type="button"
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-100 dark:border-white/20 dark:text-slate-200 dark:hover:bg-white/5"
-          onClick={c.handleClose}
-        >
-          Cancelar
-        </button>
-      </div>
     </div>
   );
 };
