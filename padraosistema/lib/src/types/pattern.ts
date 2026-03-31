@@ -12,6 +12,7 @@ export type Pattern = {
 };
 
 export type PatternVersionListItem = {
+  id: string;
   version: number;
   title: string;
   createdAt: string;
@@ -20,6 +21,7 @@ export type PatternVersionListItem = {
 };
 
 export type PatternVersionDetail = {
+  id: string;
   version: number;
   title: string;
   category: string;

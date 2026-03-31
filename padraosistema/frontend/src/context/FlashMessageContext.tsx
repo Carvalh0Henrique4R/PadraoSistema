@@ -36,7 +36,7 @@ export const FlashMessageProvider: React.FC<{ children: React.ReactNode }> = ({ 
       {children}
       {message === null ? null : (
         <div
-          className="fixed bottom-6 left-1/2 z-[100] max-w-[min(90vw,28rem)] -translate-x-1/2 rounded-lg bg-emerald-600 px-4 py-3 text-center text-sm font-medium text-white shadow-lg"
+          className="fixed bottom-6 left-1/2 z-[100] max-w-[min(90vw,28rem)] -translate-x-1/2 rounded-lg bg-emerald-600 px-4 py-3 text-center text-sm font-medium text-white shadow-lg shadow-emerald-900/20 dark:shadow-black/30"
           role="status"
         >
           {message}

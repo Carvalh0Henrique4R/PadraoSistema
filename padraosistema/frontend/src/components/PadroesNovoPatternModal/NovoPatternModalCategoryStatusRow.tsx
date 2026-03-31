@@ -12,12 +12,12 @@ export const NovoPatternModalCategoryStatusRow: React.FC<Props> = ({ register })
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <label htmlFor="padrao-categoria" className="text-sm text-slate-300">
+        <label htmlFor="padrao-categoria" className="text-sm text-slate-700 dark:text-slate-300">
           Categoria
         </label>
         <select
           id="padrao-categoria"
-          className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+          className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-950 dark:text-white"
           {...register("category", { required: true })}
         >
           {PATTERN_CATEGORY_SLUGS.map((slug) => (
@@ -28,12 +28,12 @@ export const NovoPatternModalCategoryStatusRow: React.FC<Props> = ({ register })
         </select>
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        <label htmlFor="padrao-status" className="text-sm text-slate-300">
+        <label htmlFor="padrao-status" className="text-sm text-slate-700 dark:text-slate-300">
           Status
         </label>
         <select
           id="padrao-status"
-          className="rounded-lg border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+          className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-950 dark:text-white"
           {...register("status", { required: true })}
         >
           {PATTERN_STATUS_ORDER.map((key) => (

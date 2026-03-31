@@ -4,6 +4,7 @@ import { SessionProvider, authConfigManager } from "@hono/auth-js/react";
 import React from "react";
 import { queryClient } from "~/api/queryClient";
 import { FlashMessageProvider } from "~/context/FlashMessageContext";
+import { ThemeProvider } from "~/providers/ThemeProvider";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 
@@ -18,11 +19,13 @@ const RootLayout = (): ReactNode => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider>
-        <FlashMessageProvider>
-          <Outlet />
-        </FlashMessageProvider>
-      </SessionProvider>
+      <ThemeProvider>
+        <SessionProvider>
+          <FlashMessageProvider>
+            <Outlet />
+          </FlashMessageProvider>
+        </SessionProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };

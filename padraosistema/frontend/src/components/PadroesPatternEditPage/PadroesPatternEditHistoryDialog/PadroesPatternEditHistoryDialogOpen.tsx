@@ -27,20 +27,22 @@ export const PadroesPatternEditHistoryDialogOpen: React.FC<Props> = ({ onClose, 
     setSelectedVersion(undefined);
   };
 
+  const handleReverted = (): void => {
+    setSelectedVersion(undefined);
+  };
+
   const listState = queryResultToHistoryDisplayState(listQuery);
   const detailState = queryResultToHistoryDisplayState(detailQuery);
 
   const body =
     selectedVersion == null ? (
-      <PadroesPatternEditHistoryList
-        items={listQuery.data}
-        onSelectVersion={handleSelectVersion}
-        state={listState}
-      />
+      <PadroesPatternEditHistoryList items={listQuery.data} onSelectVersion={handleSelectVersion} state={listState} />
     ) : (
       <PadroesPatternEditHistoryDetail
         detail={detailQuery.data}
         onBack={handleDetailBack}
+        onReverted={handleReverted}
+        patternId={patternId}
         state={detailState}
       />
     );

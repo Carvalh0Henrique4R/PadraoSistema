@@ -6,6 +6,8 @@ export const SYSTEM_LOG_ACTIONS = [
   "EXPORT_PATTERNS",
   "REEXPORT_PATTERNS",
   "IMPORT_PATTERNS",
+  "IMPORT_MARKDOWN_PATTERNS",
+  "REVERT_PATTERN_VERSION",
 ] as const;
 
 export type SystemLogAction = (typeof SYSTEM_LOG_ACTIONS)[number];

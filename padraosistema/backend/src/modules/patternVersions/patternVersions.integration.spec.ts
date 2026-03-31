@@ -1,12 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import type { SQL } from "bun";
 import type { AppDb } from "~/db/index";
+import { createPatternForUser, getPatternForApi, updatePatternForUser } from "~/modules/patterns/patterns.actions";
+import { randomUUID } from "node:crypto";
+import { tryCatchAsync } from "@padraosistema/lib";
 import {
-  createPatternForUser,
-  getPatternForApi,
-  updatePatternForUser,
-} from "~/modules/patterns/patterns.actions";
-import { getPatternVersionForUser, listPatternVersionsForUser } from "./patternVersions.actions";
+  getPatternVersionForUser,
+  listPatternVersionsForUser,
+  revertPatternVersionForUser,
+} from "./patternVersions.actions";
+import { PatternVersionNotFoundError } from "./patternVersions.errors";
+import { eq } from "drizzle-orm";
+import { patternVersions } from "~/db/schema/pattern_versions";
 import {
   closeTestDatabase,
   deleteUserCascadePatterns,
@@ -188,6 +193,185 @@ describe("patternVersioningIntegration", () => {
             version: 1,
           });
           expect(detail.title).toBe("V1");
+        });
+      });
+    });
+  });
+
+  describe("WHEN a pattern at version 3 reverts using archived version 1 snapshot id", () => {
+    let patternId: string;
+    let versionOneSnapshotId: string;
+
+    beforeEach(async () => {
+      const created = await createPatternForUser({
+        database: db,
+        input: { ...seedInput, content: "content-v1", title: "V1" },
+        userId,
+      });
+      patternId = created.id;
+      await updatePatternForUser({
+        database: db,
+        id: patternId,
+        input: { ...seedInput, content: "content-v2", title: "V2" },
+        userId,
+      });
+      await updatePatternForUser({
+        database: db,
+        id: patternId,
+        input: { ...seedInput, content: "content-v3", title: "V3" },
+        userId,
+      });
+      const list = await listPatternVersionsForUser({
+        database: db,
+        patternId,
+        userId,
+      });
+      const v1 = list.find((item) => item.version === 1);
+      if (v1 == null) {
+        throw new Error("missing v1 snapshot");
+      }
+      versionOneSnapshotId = v1.id;
+    });
+
+    describe("AND revert completes", () => {
+      describe("AND the live pattern is loaded", () => {
+        it("exposes version 4", async () => {
+          await revertPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            versionSnapshotId: versionOneSnapshotId,
+          });
+          const row = await getPatternForApi(db, patternId);
+          expect(row.version).toBe(4);
+        });
+      });
+    });
+
+    describe("AND revert completes", () => {
+      describe("AND the live title is read", () => {
+        it("equals the reverted snapshot title", async () => {
+          await revertPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            versionSnapshotId: versionOneSnapshotId,
+          });
+          const row = await getPatternForApi(db, patternId);
+          expect(row.title).toBe("V1");
+        });
+      });
+    });
+
+    describe("AND revert completes", () => {
+      describe("AND the live content is read", () => {
+        it("equals the reverted snapshot content", async () => {
+          await revertPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            versionSnapshotId: versionOneSnapshotId,
+          });
+          const row = await getPatternForApi(db, patternId);
+          expect(row.content).toBe("content-v1");
+        });
+      });
+    });
+
+    describe("AND revert completes", () => {
+      describe("AND archived rows for the pattern are counted", () => {
+        it("increases by exactly one", async () => {
+          const beforeRows = await db.select().from(patternVersions).where(eq(patternVersions.patternId, patternId));
+          await revertPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            versionSnapshotId: versionOneSnapshotId,
+          });
+          const afterRows = await db.select().from(patternVersions).where(eq(patternVersions.patternId, patternId));
+          expect(afterRows.length).toBe(beforeRows.length + 1);
+        });
+      });
+    });
+
+    describe("AND revert completes", () => {
+      describe("AND archived version 1 is loaded by number", () => {
+        it("keeps the original snapshot title", async () => {
+          await revertPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            versionSnapshotId: versionOneSnapshotId,
+          });
+          const detail = await getPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            version: 1,
+          });
+          expect(detail.title).toBe("V1");
+        });
+      });
+    });
+
+    describe("AND revert is attempted with a random snapshot id", () => {
+      it("rejects with version not found", async () => {
+        const [, err] = await tryCatchAsync(() =>
+          revertPatternVersionForUser({
+            database: db,
+            patternId,
+            userId,
+            versionSnapshotId: randomUUID(),
+          }),
+        );
+        expect(err).toBeInstanceOf(PatternVersionNotFoundError);
+      });
+    });
+
+    describe("AND another user pattern exists at version 3", () => {
+      let otherPatternVersionOneSnapshotId: string;
+
+      beforeEach(async () => {
+        const other = await createPatternForUser({
+          database: db,
+          input: { ...seedInput, title: "Other-V1" },
+          userId,
+        });
+        await updatePatternForUser({
+          database: db,
+          id: other.id,
+          input: { ...seedInput, title: "Other-V2" },
+          userId,
+        });
+        await updatePatternForUser({
+          database: db,
+          id: other.id,
+          input: { ...seedInput, title: "Other-V3" },
+          userId,
+        });
+        const list = await listPatternVersionsForUser({
+          database: db,
+          patternId: other.id,
+          userId,
+        });
+        const v1 = list.find((item) => item.version === 1);
+        if (v1 == null) {
+          throw new Error("missing other v1 snapshot");
+        }
+        otherPatternVersionOneSnapshotId = v1.id;
+      });
+
+      describe("AND revert targets the foreign snapshot id", () => {
+        it("rejects with version not found", async () => {
+          const [, err] = await tryCatchAsync(() =>
+            revertPatternVersionForUser({
+              database: db,
+              patternId,
+              userId,
+              versionSnapshotId: otherPatternVersionOneSnapshotId,
+            }),
+          );
+          expect(err).toBeInstanceOf(PatternVersionNotFoundError);
         });
       });
     });

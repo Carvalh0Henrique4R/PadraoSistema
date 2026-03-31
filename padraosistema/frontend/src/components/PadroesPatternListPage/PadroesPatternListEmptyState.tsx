@@ -10,12 +10,14 @@ export const PadroesPatternListEmptyState: React.FC = () => {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 py-16 text-center">
-      <div className="rounded-2xl border border-white/5 bg-slate-900/40 p-8 text-slate-600" aria-hidden>
+      <div className="rounded-2xl border border-slate-200 bg-slate-100/80 p-8 text-slate-500 dark:border-white/5 dark:bg-slate-900/40 dark:text-slate-600" aria-hidden>
         <span className="text-6xl leading-none">📄</span>
       </div>
       <div className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold text-white">Nenhum padrão documentado</h2>
-        <p className="max-w-md text-sm text-slate-400">Comece adicionando o primeiro padrão do seu sistema</p>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Nenhum padrão documentado</h2>
+        <p className="max-w-md text-sm text-slate-600 dark:text-slate-400">
+          Comece adicionando o primeiro padrão do seu sistema
+        </p>
       </div>
       <button
         type="button"

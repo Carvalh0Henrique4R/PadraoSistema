@@ -23,18 +23,18 @@ export const ExportHistoryRow: React.FC<Props> = ({ entry, onRetry }) => {
   }, []);
 
   return (
-    <li className="overflow-hidden rounded-xl border border-white/10 bg-slate-900/60 transition-colors duration-150 ease-out hover:border-white/20 hover:bg-slate-900/80">
+    <li className="overflow-hidden rounded-xl border border-slate-200 bg-white transition-colors duration-150 ease-out hover:border-slate-300 hover:bg-slate-50 dark:border-white/10 dark:bg-slate-900/60 dark:hover:border-white/20 dark:hover:bg-slate-900/80">
       <button
         type="button"
         onClick={toggleExpanded}
         aria-expanded={expanded}
-        className="flex w-full cursor-pointer flex-wrap items-center justify-between gap-3 px-4 py-3 text-left transition-colors duration-150 ease-out hover:bg-white/5"
+        className="flex w-full cursor-pointer flex-wrap items-center justify-between gap-3 px-4 py-3 text-left transition-colors duration-150 ease-out hover:bg-slate-100 dark:hover:bg-white/5"
       >
         <div className="flex flex-col gap-0.5">
-          <p className="text-sm text-slate-200">Exportado em: {formatExportDate(entry.createdAt)}</p>
-          <p className="text-xs text-slate-400">{String(entry.patterns.length)} patterns</p>
+          <p className="text-sm text-slate-800 dark:text-slate-200">Exportado em: {formatExportDate(entry.createdAt)}</p>
+          <p className="text-xs text-slate-600 dark:text-slate-400">{String(entry.patterns.length)} patterns</p>
         </div>
-        <span className="shrink-0 text-xs font-semibold text-indigo-300">
+        <span className="shrink-0 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
           {expanded ? "Recolher" : "Expandir"}
         </span>
       </button>

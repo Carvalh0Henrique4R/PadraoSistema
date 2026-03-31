@@ -11,6 +11,7 @@ export const mapJoinedRowToVersionListItem = (row: PatternVersionJoinedRow): Pat
   authorName: row.authorName,
   createdAt: row.createdAt.toISOString(),
   createdBy: row.createdBy,
+  id: row.id,
   title: row.title,
   version: row.version,
 });
@@ -21,6 +22,7 @@ export const mapJoinedRowToVersionDetail = (row: PatternVersionJoinedRow): Patte
   content: row.content,
   createdAt: row.createdAt.toISOString(),
   createdBy: row.createdBy,
+  id: row.id,
   status: mapStatus(row.status),
   title: row.title,
   version: row.version,

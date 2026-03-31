@@ -34,6 +34,7 @@ export type PatternVersionJoinedRow = {
   content: string;
   createdAt: Date;
   createdBy: string;
+  id: string;
   status: string;
   title: string;
   version: number;
@@ -50,6 +51,7 @@ export const selectPatternVersionsByPatternIdDesc = async (params: {
       content: patternVersions.content,
       createdAt: patternVersions.createdAt,
       createdBy: patternVersions.createdBy,
+      id: patternVersions.id,
       status: patternVersions.status,
       title: patternVersions.title,
       version: patternVersions.version,
@@ -72,14 +74,39 @@ export const selectPatternVersionByPatternIdAndVersion = async (params: {
       content: patternVersions.content,
       createdAt: patternVersions.createdAt,
       createdBy: patternVersions.createdBy,
+      id: patternVersions.id,
       status: patternVersions.status,
       title: patternVersions.title,
       version: patternVersions.version,
     })
     .from(patternVersions)
     .innerJoin(users, eq(patternVersions.createdBy, users.id))
-    .where(
-      and(eq(patternVersions.patternId, params.patternId), eq(patternVersions.version, params.version)),
-    );
+    .where(and(eq(patternVersions.patternId, params.patternId), eq(patternVersions.version, params.version)));
+  return row;
+};
+
+export type PatternVersionSnapshotSourceRow = {
+  category: string;
+  content: string;
+  status: string;
+  title: string;
+  version: number;
+};
+
+export const selectPatternVersionSnapshotByIdForPattern = async (params: {
+  database: DbExecutor;
+  patternId: string;
+  versionSnapshotId: string;
+}): Promise<PatternVersionSnapshotSourceRow | undefined> => {
+  const [row] = await params.database
+    .select({
+      category: patternVersions.category,
+      content: patternVersions.content,
+      status: patternVersions.status,
+      title: patternVersions.title,
+      version: patternVersions.version,
+    })
+    .from(patternVersions)
+    .where(and(eq(patternVersions.id, params.versionSnapshotId), eq(patternVersions.patternId, params.patternId)));
   return row;
 };

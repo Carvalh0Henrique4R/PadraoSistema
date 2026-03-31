@@ -1,4 +1,4 @@
-import type { PatternVersionDetail, PatternVersionListItem } from "@padraosistema/lib";
+import type { Pattern, PatternVersionDetail, PatternVersionListItem } from "@padraosistema/lib";
 import type { AppDb } from "~/db/index";
 import { PatternForbiddenError, PatternNotFoundError } from "~/modules/patterns/patterns.errors";
 import { findPatternRowById } from "~/modules/patterns/patterns.service";
@@ -7,6 +7,8 @@ import {
   selectPatternVersionByPatternIdAndVersion,
   selectPatternVersionsByPatternIdDesc,
 } from "./patternVersions.repository";
+import { logPatternVersionRevertActions } from "./patternVersions.revert.logs";
+import { revertPatternVersionInTransaction } from "./patternVersions.revert.service";
 import { mapJoinedRowToVersionDetail, mapJoinedRowToVersionListItem } from "./patternVersions.service";
 
 export const listPatternVersionsForUser = async (params: {
@@ -50,4 +52,27 @@ export const getPatternVersionForUser = async (params: {
     throw new PatternVersionNotFoundError();
   }
   return mapJoinedRowToVersionDetail(joined);
+};
+
+export const revertPatternVersionForUser = async (params: {
+  database: AppDb;
+  patternId: string;
+  userId: string;
+  versionSnapshotId: string;
+}): Promise<Pattern> => {
+  const result = await revertPatternVersionInTransaction({
+    database: params.database,
+    editorUserId: params.userId,
+    patternId: params.patternId,
+    versionSnapshotId: params.versionSnapshotId,
+  });
+  await logPatternVersionRevertActions({
+    database: params.database,
+    fromVersion: result.fromVersion,
+    newVersion: result.newVersion,
+    patternId: params.patternId,
+    revertedFromVersion: result.revertedFromVersion,
+    userId: params.userId,
+  });
+  return result.pattern;
 };

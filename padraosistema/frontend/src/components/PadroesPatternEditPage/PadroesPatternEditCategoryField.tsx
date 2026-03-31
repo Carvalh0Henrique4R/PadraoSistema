@@ -12,13 +12,13 @@ type Props = {
 export const PadroesPatternEditCategoryField: React.FC<Props> = ({ canEdit, categoryOptions, register }) => {
   return (
     <div className="flex min-w-64 flex-col gap-2">
-      <label htmlFor="edit-categoria" className="text-sm text-slate-300">
+      <label htmlFor="edit-categoria" className="text-sm text-slate-700 dark:text-slate-300">
         Categoria
       </label>
       <select
         id="edit-categoria"
         disabled={canEdit === false}
-        className="rounded-lg border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"
+        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-900/80 dark:text-white"
         {...register("category", { required: true })}
       >
         {categoryOptions.map((slug) => (
