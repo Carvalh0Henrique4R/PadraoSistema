@@ -380,3 +380,9 @@ To publish this template to npm so others can use it:
    ```
 
 Note: The package name is `create-vex-app`, but users call it with `bun create vex-app` (Bun automatically prepends `create-`).
+
+**Comando para acessar e testar o MCP do projeto**
+
+```bash
+npx @modelcontextprotocol/inspector bun --env-file mcp/.env mcp/src/index.ts
+```

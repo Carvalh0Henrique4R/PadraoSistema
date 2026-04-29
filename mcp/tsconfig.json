@@ -1,0 +1,22 @@
+{
+  "extends": "../tsconfig.json",
+  "exclude": ["**/*.spec.ts", "../backend/src/db/schema/auth.ts"],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "..",
+    "module": "ESNext",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "noEmit": false,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "types": ["bun-types", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  },
+  "include": ["./src/**/*.ts", "../backend/src/db/schema/**/*.ts"],
+  "references": [{ "path": "../lib" }]
+}

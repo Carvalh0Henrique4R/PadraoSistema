@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["./src/**/*.ts", "../backend/src/db/schema/**/*.ts"],
+  "exclude": ["../backend/src/db/schema/auth.ts"]
+}

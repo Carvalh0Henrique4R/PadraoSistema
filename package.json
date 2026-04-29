@@ -7,6 +7,9 @@
   "license": "MIT",
   "author": "Alex Richards <alexchristopherrichards@gmail.com>",
   "homepage": "https://www.vexapp.io",
+  "overrides": {
+    "drizzle-orm": "0.44.7"
+  },
   "engines": {
     "bun": ">=1.2.21"
   },
@@ -29,7 +32,8 @@
   "workspaces": [
     "frontend",
     "lib",
-    "backend"
+    "backend",
+    "mcp"
   ],
   "scripts": {
     "postinstall": "bun run build:lib",
