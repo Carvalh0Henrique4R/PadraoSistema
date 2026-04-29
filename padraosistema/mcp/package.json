@@ -1,0 +1,32 @@
+{
+  "name": "@padraosistema/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "dev": "bun --watch src/index.ts",
+    "lint": "eslint .",
+    "start": "bun src/index.ts",
+    "test": "bun test --pass-with-no-tests",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@padraosistema/lib": "workspace:*",
+    "drizzle-orm": "^0.44.7",
+    "postgres": "^3.4.7",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
+    "bun-types": "latest",
+    "eslint": "^9",
+    "eslint-plugin-perfectionist": "^5",
+    "eslint-plugin-sonarjs": "^4",
+    "eslint-plugin-unicorn": "^63",
+    "typescript": "^5.9.0"
+  }
+}
