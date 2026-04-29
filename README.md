@@ -386,3 +386,20 @@ Note: The package name is `create-vex-app`, but users call it with `bun create v
 ```bash
 npx @modelcontextprotocol/inspector bun --env-file mcp/.env mcp/src/index.ts
 ```
+
+**Para utilizar este mcp no seu projeto basta colar este JSON no arquivo `mcp.json`:**
+
+```bash
+{
+  "mcpServers": {
+    "padraosistema-mcp": {
+      "command": "bun",
+      "args": [
+        "--env-file",
+        "D:/Users/henrique.carvalho/Documents/PadraoSistema/mcp/.env",
+        "D:/Users/henrique.carvalho/Documents/PadraoSistema/mcp/src/index.ts"
+      ]
+    }
+  }
+}
+```

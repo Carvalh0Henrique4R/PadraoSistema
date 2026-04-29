@@ -57,7 +57,7 @@ const serializePatternDates = <
 export const patternsTools: readonly McpTool[] = [
   {
     description:
-      "Lista padrões cadastrados. Filtra opcionalmente por status e/ou categoria. Retorna id, título, categoria, status, versão e timestamps.",
+      "Lista padrões cadastrados. Filtra opcionalmente por status e/ou categoria. Retorna id, title, content, category e version.",
     handler: async (inputRaw: unknown): Promise<unknown> => {
       const input = listPatternsInputSchema.parse(inputRaw);
       const statusFilter = input.status == null ? [] : [eq(patterns.status, input.status)];
@@ -68,11 +68,9 @@ export const patternsTools: readonly McpTool[] = [
         const projected = db
           .select({
             category: patterns.category,
-            createdAt: patterns.createdAt,
             id: patterns.id,
-            status: patterns.status,
+            content: patterns.content,
             title: patterns.title,
-            updatedAt: patterns.updatedAt,
             version: patterns.version,
           })
           .from(patterns);
@@ -92,7 +90,13 @@ export const patternsTools: readonly McpTool[] = [
         throw handlerError;
       }
 
-      return rows.map((row) => serializePatternDates(row));
+      return rows.map((row) => ({
+        category: row.category,
+        content: row.content,
+        id: row.id,
+        title: row.title,
+        version: row.version,
+      }));
     },
     inputSchema: listPatternsInputSchema,
     name: "list_patterns",
