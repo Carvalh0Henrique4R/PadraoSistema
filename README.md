@@ -168,7 +168,7 @@ This template includes **Auth.js** (formerly NextAuth) integration with **Google
 1. **Set up Google OAuth credentials:**
    - Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
    - Create a new OAuth 2.0 Client ID (Web application)
-   - Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+   - Add authorized redirect URI: `http://localhost:5173/api/auth/callback/google`
    - Copy the Client ID and Client Secret
 
 2. **Configure backend environment variables** in `backend/.env`:
@@ -177,7 +177,7 @@ This template includes **Auth.js** (formerly NextAuth) integration with **Google
    AUTH_SECRET=your-auth-secret-here  # Generate with: openssl rand -base64 32
    DATABASE_URL=postgresql://user:password@localhost:5432/dbname
    FRONTEND_URL=http://localhost:5173
-   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
    GOOGLE_CLIENT_SECRET=your-google-client-secret
    PORT=3000
    ```

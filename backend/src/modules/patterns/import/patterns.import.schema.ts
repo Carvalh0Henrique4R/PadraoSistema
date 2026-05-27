@@ -1,4 +1,5 @@
-import type { PatternInput, PatternStatus } from "@padraosistema/lib";
+import type { PatternCategorySlug, PatternInput, PatternStatus } from "@padraosistema/lib";
+import { PATTERN_CATEGORY_LABELS, PATTERN_CATEGORY_SLUGS } from "@padraosistema/lib";
 import { z } from "zod";
 import { firstZodMessage } from "../patterns.schema";
 
@@ -33,9 +34,25 @@ const importStatusLookup: Readonly<Record<string, PatternStatus>> = {
 
 const normalizeImportStatusToken = (raw: string): string => raw.trim().toLowerCase();
 
+const importCategoryLookup: Readonly<Record<string, PatternCategorySlug>> = PATTERN_CATEGORY_SLUGS.reduce<
+  Record<string, PatternCategorySlug>
+>((acc, slug) => {
+  acc[slug] = slug;
+  acc[PATTERN_CATEGORY_LABELS[slug].toLowerCase()] = slug;
+  return acc;
+}, {});
+
+const normalizeImportCategoryToken = (raw: string): string => raw.trim().toLowerCase();
+
 export const normalizeImportStatus = (raw: string): PatternStatus | null => {
   const key = normalizeImportStatusToken(raw);
   const resolved = importStatusLookup[key];
+  return resolved ?? null;
+};
+
+export const normalizeImportCategory = (raw: string): PatternCategorySlug | null => {
+  const key = normalizeImportCategoryToken(raw);
+  const resolved = importCategoryLookup[key];
   return resolved ?? null;
 };
 
@@ -54,8 +71,12 @@ const mapParsedItemToPatternInput = (parsed: z.infer<typeof importItemObjectSche
   if (status == null) {
     return null;
   }
+  const category = normalizeImportCategory(parsed.category);
+  if (category == null) {
+    return null;
+  }
   return {
-    category: parsed.category.trim(),
+    category,
     content: parsed.description.trim(),
     status,
     title: parsed.title.trim(),
@@ -75,9 +96,17 @@ const validateImportItemsFromIndex = (
   if (!parsed.success) {
     return { index, message: firstZodMessage(parsed.error), ok: false };
   }
+  const status = normalizeImportStatus(parsed.data.status);
+  if (status == null) {
+    return { index, message: "Status inválido para o padrão importado.", ok: false };
+  }
+  const category = normalizeImportCategory(parsed.data.category);
+  if (category == null) {
+    return { index, message: "Categoria inválida para o padrão importado.", ok: false };
+  }
   const input = mapParsedItemToPatternInput(parsed.data);
   if (input == null) {
-    return { index, message: "Status inválido para o padrão importado.", ok: false };
+    return { index, message: "Dados inválidos para o padrão importado.", ok: false };
   }
   return validateImportItemsFromIndex(items, index + 1, acc.concat([input]));
 };
@@ -93,9 +122,7 @@ export const validateImportItemsArray = (
 
 export const parsePatternImportRequest = (
   body: unknown,
-):
-  | { ok: true; items: PatternInput[] }
-  | { ok: false; message: string; index?: number } => {
+): { ok: true; items: PatternInput[] } | { ok: false; message: string; index?: number } => {
   const wrapped = importRequestBodySchema.safeParse(body);
   if (!wrapped.success) {
     return { message: firstZodMessage(wrapped.error), ok: false };

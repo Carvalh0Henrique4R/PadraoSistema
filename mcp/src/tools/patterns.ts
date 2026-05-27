@@ -70,6 +70,7 @@ export const patternsTools: readonly McpTool[] = [
             category: patterns.category,
             id: patterns.id,
             content: patterns.content,
+            id: patterns.id,
             title: patterns.title,
             version: patterns.version,
           })
@@ -106,7 +107,21 @@ export const patternsTools: readonly McpTool[] = [
     handler: async (inputRaw: unknown): Promise<unknown> => {
       const input = getPatternInputSchema.parse(inputRaw);
       const [rows, fetchError] = await tryCatchAsync(async () =>
-        db.select().from(patterns).where(eq(patterns.id, input.id)).limit(1),
+        db
+          .select({
+            category: patterns.category,
+            content: patterns.content,
+            createdAt: patterns.createdAt,
+            id: patterns.id,
+            status: patterns.status,
+            title: patterns.title,
+            updatedAt: patterns.updatedAt,
+            userId: patterns.userId,
+            version: patterns.version,
+          })
+          .from(patterns)
+          .where(eq(patterns.id, input.id))
+          .limit(1),
       );
 
       if (fetchError !== null) {
@@ -133,11 +148,11 @@ export const patternsTools: readonly McpTool[] = [
           .select({
             category: patterns.category,
             content: patterns.content,
-            createdAt: patterns.createdAt,
+            //createdAt: patterns.createdAt,
             id: patterns.id,
             status: patterns.status,
             title: patterns.title,
-            updatedAt: patterns.updatedAt,
+            //updatedAt: patterns.updatedAt,
             version: patterns.version,
           })
           .from(patterns)

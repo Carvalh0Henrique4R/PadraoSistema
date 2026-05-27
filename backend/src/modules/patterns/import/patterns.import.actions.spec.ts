@@ -11,6 +11,10 @@ import {
 } from "~/test/patternVersioningTestKit";
 import { importPatternsForUser, parsePatternImportBody } from "./patterns.import.actions";
 
+const selectUserPatterns = async (db: AppDb, userId: string) => {
+  return db.select().from(patterns).where(eq(patterns.userId, userId));
+};
+
 describe("parsePatternImportBody", () => {
   describe("WHEN the root object contains an unknown property", () => {
     it("rejects the payload", () => {
@@ -43,7 +47,7 @@ describe("parsePatternImportBody", () => {
   describe("WHEN the first item omits description", () => {
     it("returns index zero", () => {
       const result = parsePatternImportBody({
-        data: [{ category: "c", status: "draft", title: "t" }],
+        data: [{ category: "apis", status: "draft", title: "t" }],
       });
       expect(result.ok ? -1 : result.index).toBe(0);
     });
@@ -53,11 +57,30 @@ describe("parsePatternImportBody", () => {
     it("returns index one", () => {
       const result = parsePatternImportBody({
         data: [
-          { category: "c", description: "d", status: "draft", title: "t1" },
-          { category: "c", description: "d", status: "invalid-status-xyz", title: "t2" },
+          { category: "apis", description: "d", status: "draft", title: "t1" },
+          { category: "apis", description: "d", status: "invalid-status-xyz", title: "t2" },
         ],
       });
       expect(result.ok ? -1 : result.index).toBe(1);
+    });
+  });
+
+  describe("WHEN an item has an unknown category", () => {
+    it("rejects the item", () => {
+      const result = parsePatternImportBody({
+        data: [{ category: "Arquitetura", description: "d", status: "draft", title: "t" }],
+      });
+      expect(result.ok).toBe(false);
+      expect(result.ok ? "" : result.message).toBe("Categoria inválida para o padrão importado.");
+    });
+  });
+
+  describe("WHEN an item uses a category label from the combo", () => {
+    it("normalizes the category to the lowercase slug", () => {
+      const result = parsePatternImportBody({
+        data: [{ category: "Componentes", description: "d", status: "draft", title: "t" }],
+      });
+      expect(result.ok ? result.items[0]?.category : "").toBe("componentes");
     });
   });
 });
@@ -79,7 +102,7 @@ describe("importPatternsForUser", () => {
     await closeTestDatabase(client);
   });
 
-  describe("WHEN a single object uses a Portuguese status alias", () => {
+  describe("WHEN a single object uses a Portuguese status alias and category label", () => {
     let outcome: Awaited<ReturnType<typeof importPatternsForUser>>;
 
     beforeEach(async () => {
@@ -100,6 +123,11 @@ describe("importPatternsForUser", () => {
     it("returns success with one created pattern", () => {
       expect(outcome.ok && outcome.created === 1).toBe(true);
     });
+
+    it("stores the category as the lowercase slug", async () => {
+      const rows = await selectUserPatterns(db, userId);
+      expect(rows[0]?.category).toBe("componentes");
+    });
   });
 
   describe("WHEN two valid items are imported in one request", () => {
@@ -109,8 +137,8 @@ describe("importPatternsForUser", () => {
       outcome = await importPatternsForUser({
         body: {
           data: [
-            { category: "c", description: "d1", status: "estavel", title: "P1" },
-            { category: "c", description: "d2", status: "review", title: "P2" },
+            { category: "APIs", description: "d1", status: "estavel", title: "P1" },
+            { category: "dados", description: "d2", status: "review", title: "P2" },
           ],
         },
         database: db,
@@ -128,13 +156,13 @@ describe("importPatternsForUser", () => {
     let outcome: Awaited<ReturnType<typeof importPatternsForUser>>;
 
     beforeEach(async () => {
-      const prior = await db.select().from(patterns).where(eq(patterns.userId, userId));
+      const prior = await selectUserPatterns(db, userId);
       rowCountBefore = prior.length;
       outcome = await importPatternsForUser({
         body: {
           data: [
-            { category: "c", description: "d", status: "draft", title: "ok" },
-            { category: "c", description: "d", status: "bad", title: "bad" },
+            { category: "apis", description: "d", status: "draft", title: "ok" },
+            { category: "apis", description: "d", status: "bad", title: "bad" },
           ],
         },
         database: db,
@@ -152,7 +180,7 @@ describe("importPatternsForUser", () => {
       let rowCountAfter: number;
 
       beforeEach(async () => {
-        const after = await db.select().from(patterns).where(eq(patterns.userId, userId));
+        const after = await selectUserPatterns(db, userId);
         rowCountAfter = after.length;
       });
 
