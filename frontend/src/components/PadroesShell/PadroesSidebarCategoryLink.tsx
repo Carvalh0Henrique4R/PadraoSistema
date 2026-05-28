@@ -22,15 +22,16 @@ export const PadroesSidebarCategoryLink: React.FC<Props> = ({ icon, pathname, sl
     <Link
       params={{ segment: slug }}
       to="/patterns/$segment"
+      aria-label={PATTERN_CATEGORY_LABELS[slug]}
+      title={PATTERN_CATEGORY_LABELS[slug]}
       className={cn(
-        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm",
+        "flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors duration-150",
         isCategoryActive
-          ? "bg-slate-200 text-slate-900 dark:bg-white/10 dark:text-white"
-          : "text-slate-600 hover:bg-slate-200/80 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-slate-200",
+          ? "bg-white text-[#078b7c] shadow-sm"
+          : "text-white/90 hover:bg-white/15 hover:text-white",
       )}
     >
       <Icon aria-hidden className={navIconClass} data-lucide={dataLucide} />
-      {PATTERN_CATEGORY_LABELS[slug]}
     </Link>
   );
 };

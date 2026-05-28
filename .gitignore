@@ -21,6 +21,7 @@ dist/
 *.swp
 *.swo
 *~
+frontend/temp/
 
 # Uploaded files (generated at runtime)
 backend/public/uploads/

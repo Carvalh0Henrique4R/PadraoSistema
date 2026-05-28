@@ -9,12 +9,12 @@ type Props = {
 
 export const PadroesSidebarStatusRow: React.FC<Props> = ({ count, dotClass, label }) => {
   return (
-    <li className="flex flex-row items-center justify-between gap-2 px-2 text-sm text-slate-600 dark:text-slate-400">
-      <span className="flex flex-row items-center gap-2">
-        <span className={cn("inline-flex h-2 min-h-2 w-2 min-w-2 rounded-full", dotClass)} />
-        {label}
-      </span>
-      <span className="tabular-nums text-slate-700 dark:text-slate-500">{count}</span>
+    <li
+      className="flex h-7 w-7 items-center justify-center rounded-md text-white/90 hover:bg-white/10"
+      aria-label={`${label}: ${String(count)}`}
+      title={`${label}: ${String(count)}`}
+    >
+      <span className={cn("inline-flex h-3 w-3 rounded-full ring-2 ring-white/40", dotClass)} />
     </li>
   );
 };

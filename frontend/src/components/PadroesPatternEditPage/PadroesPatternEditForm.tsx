@@ -19,7 +19,7 @@ export const PadroesPatternEditForm: React.FC<Props> = ({ canEdit, pattern }) =>
   const categoryOptions = buildPatternEditCategoryOptions(pattern.category);
 
   return (
-    <div className="flex flex-1 flex-col gap-6 px-6 py-8">
+    <div className="flex flex-1 flex-col gap-6 bg-white px-6 py-8 dark:bg-[#111817]">
       <PadroesPatternEditHeader
         currentVersion={pattern.version}
         onBack={c.handleBack}
@@ -35,7 +35,7 @@ export const PadroesPatternEditForm: React.FC<Props> = ({ canEdit, pattern }) =>
       ) : null}
       {canEdit === false ? <PadroesPatternEditReadOnlyBanner /> : null}
       <form
-        className="flex max-w-4xl flex-col gap-4"
+        className="flex max-w-5xl flex-col gap-4 rounded-md border border-[#e4ebe8] bg-white p-4 shadow-sm shadow-[#dfe6e3]/60 dark:border-white/10 dark:bg-white/5 dark:shadow-none"
         onDragOver={c.handleFormDragOver}
         onDrop={c.handleEditorDrop}
         onPaste={c.handleEditorPaste}

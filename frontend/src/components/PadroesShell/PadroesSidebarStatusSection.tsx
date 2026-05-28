@@ -21,9 +21,8 @@ type Props = {
 
 export const PadroesSidebarStatusSection: React.FC<Props> = ({ patterns }) => {
   return (
-    <div className="flex flex-col gap-2">
-      <p className="px-2 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-500">Status</p>
-      <ul className="flex flex-col gap-2">
+    <div className="flex flex-col items-center gap-2">
+      <ul className="flex flex-col items-center gap-2" aria-label="Status dos padrões">
         {statusOrder.map((status) => (
           <PadroesSidebarStatusRow
             key={status}

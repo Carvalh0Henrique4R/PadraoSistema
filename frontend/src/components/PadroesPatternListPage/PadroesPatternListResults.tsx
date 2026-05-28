@@ -35,7 +35,7 @@ export const PadroesPatternListResults: React.FC<Props> = ({
   }
 
   return (
-    <ul className="flex flex-col gap-2 px-6 pb-8 pt-6">
+    <ul className="grid grid-cols-1 gap-3 px-6 pb-8 pt-6 lg:grid-cols-2 xl:grid-cols-3">
       {filtered.map((pattern) => (
         <PadroesPatternListItem key={pattern.id} pattern={pattern} />
       ))}

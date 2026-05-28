@@ -55,7 +55,7 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
   return (
     <PadroesShellContext.Provider value={shellValue}>
       <PadroesShellListSearchProvider>
-        <div className="flex min-h-full flex-1 flex-col bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white">
+        <div className="flex min-h-full flex-1 flex-col bg-[#f7f8f8] text-[#22302d] dark:bg-[#111817] dark:text-white">
           <PadroesHeader
             exportZipError={exportError}
             patternCount={patterns.length}
@@ -68,7 +68,9 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
           />
           <div className="flex min-h-0 flex-1">
             <PadroesSidebar patterns={patterns} />
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto">{children}</div>
+            <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-white dark:bg-[#111817]">
+              {children}
+            </main>
           </div>
         </div>
       </PadroesShellListSearchProvider>
