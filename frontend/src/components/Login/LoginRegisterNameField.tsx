@@ -10,11 +10,11 @@ export const LoginRegisterNameField: React.FC<Props> = ({ name, setName }) => {
     setName(ev.target.value);
   };
   return (
-    <label className="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300" htmlFor="reg-name">
+    <label className="flex flex-col gap-1 text-sm text-muted-foreground" htmlFor="reg-name">
       Nome
       <input
         autoComplete="name"
-        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-950 dark:text-white"
+        className="rounded-lg border border-input bg-background px-3 py-2 text-foreground outline-none transition-colors focus:border-ring focus:ring-3 focus:ring-ring/20"
         id="reg-name"
         value={name}
         onChange={onChange}

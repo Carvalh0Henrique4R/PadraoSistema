@@ -20,10 +20,10 @@ export const PadroesSidebarTodosLink: React.FC<Props> = ({ pathname }) => {
       aria-label="Todos"
       title="Todos"
       className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors duration-150",
+        "flex h-10 w-10 items-center justify-center rounded-lg border text-sm transition-all duration-150",
         isTodosActive
-          ? "bg-white text-[#078b7c] shadow-sm"
-          : "text-white/90 hover:bg-white/15 hover:text-white",
+          ? "border-sidebar-primary bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+          : "border-transparent text-sidebar-foreground/70 hover:border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
       )}
     >
       <Grid3x3 aria-hidden className={navIconClass} data-lucide="grid-3x3" />

@@ -22,16 +22,16 @@ export const PadroesPatternListSearchBar: React.FC<Props> = ({ layout = "page", 
         Buscar padrões
       </label>
       <div
-        className={`flex items-center gap-3 rounded-md border border-[#dfe6e3] bg-white transition-colors duration-150 hover:border-[#c9d4d0] dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20 ${innerPadding}`}
+        className={`flex items-center gap-3 rounded-lg border border-input bg-background shadow-xs transition-colors duration-150 hover:border-ring/35 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20 ${innerPadding}`}
       >
-        <Search aria-hidden className="h-4 w-4 shrink-0 text-[#52615d] dark:text-slate-400" strokeWidth={2} />
+        <Search aria-hidden className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={2} />
         <input
           id="busca-padroes"
           type="search"
           placeholder="Buscar padrões..."
           value={value}
           onChange={handleChange}
-          className="min-w-0 flex-1 bg-transparent text-sm text-[#22302d] outline-none placeholder:text-[#7b8985] dark:text-white"
+          className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
       </div>
     </div>

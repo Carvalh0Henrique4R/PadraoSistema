@@ -11,14 +11,14 @@ export const LoginRoutePage: React.FC<Props> = ({ redirectAfterLogin }) => {
 
   if (flow.status === "loading") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 text-slate-600 dark:bg-slate-950 dark:text-slate-300">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background text-muted-foreground">
         Carregando sessão…
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 py-12 text-slate-900 dark:bg-slate-950 dark:text-white">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(180deg,var(--background),var(--muted))] px-4 py-12 text-foreground">
       <LoginFormCard
         email={flow.email}
         handleCredentialsSubmit={flow.handleCredentialsSubmit}

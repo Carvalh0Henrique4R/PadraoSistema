@@ -15,7 +15,13 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
+      "@/*": ["src/*"],
       "@vex-app/lib": ["../lib/dist/index.d.ts"],
+      "components/*": ["src/components/*"],
+      "hooks/*": ["src/hooks/*"],
+      "lib/*": ["src/lib/*"],
+      "ui/*": ["src/components/ui/*"],
+      "utils/*": ["src/lib/*"],
       "~/*": ["src/*"]
     }
   },

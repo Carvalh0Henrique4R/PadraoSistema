@@ -23,12 +23,12 @@ export const PadroesSidebar: React.FC<Props> = ({ patterns }) => {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <aside className="flex w-12 shrink-0 flex-col items-center gap-4 bg-[#078b7c] px-2 py-5 text-white dark:bg-[#067466]">
+    <aside className="flex w-16 shrink-0 flex-col items-center gap-4 border-r border-sidebar-border bg-sidebar px-3 py-5 text-sidebar-foreground shadow-sm">
       <nav className="flex flex-col items-center gap-2" aria-label="Categorias">
-          <PadroesSidebarTodosLink pathname={pathname} />
-          {PATTERN_CATEGORY_SLUGS.map((slug) => (
-            <PadroesSidebarCategoryLink key={slug} icon={categoryNavIcons[slug]} pathname={pathname} slug={slug} />
-          ))}
+        <PadroesSidebarTodosLink pathname={pathname} />
+        {PATTERN_CATEGORY_SLUGS.map((slug) => (
+          <PadroesSidebarCategoryLink key={slug} icon={categoryNavIcons[slug]} pathname={pathname} slug={slug} />
+        ))}
       </nav>
       <div className="mt-auto">
         <PadroesSidebarStatusSection patterns={patterns} />

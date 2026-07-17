@@ -20,7 +20,7 @@ export const PadroesHeaderCartTrigger: React.FC = () => {
     <button
       type="button"
       onClick={handleClick}
-      className="relative flex shrink-0 items-center justify-center rounded-md border border-[#e7ecea] bg-[#f7f8f8] p-2 text-[#52615d] hover:border-[#0b8f7f]/40 hover:bg-[#eef4f2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0b8f7f]/50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-[#0b8f7f]/60 dark:hover:bg-white/10"
+      className="relative flex shrink-0 items-center justify-center rounded-lg border border-border bg-background p-2 text-muted-foreground shadow-xs transition-colors hover:border-ring/35 hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
       aria-label={`Abrir carrinho, ${String(count)} itens`}
     >
       <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -31,13 +31,10 @@ export const PadroesHeaderCartTrigger: React.FC = () => {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <path
-          d="M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-          fill="currentColor"
-        />
+        <path d="M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" fill="currentColor" />
       </svg>
       {count > 0 ? (
-        <span className="absolute -right-1 -top-1 flex items-center justify-center rounded-full bg-[#0b8f7f] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+        <span className="absolute -right-1 -top-1 flex items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold leading-none text-primary-foreground">
           {count > 99 ? "99+" : String(count)}
         </span>
       ) : null}

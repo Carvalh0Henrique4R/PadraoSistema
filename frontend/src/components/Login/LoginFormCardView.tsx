@@ -37,12 +37,12 @@ export const LoginFormCardView: React.FC<Props> = ({
   toggleMode,
 }) => {
   return (
-    <div className="flex w-full max-w-md flex-col gap-6 rounded-xl border border-slate-200 bg-white p-8 shadow-sm shadow-slate-200/50 dark:border-white/10 dark:bg-slate-900/80 dark:shadow-none">
-      <h1 className="text-center text-2xl font-semibold text-slate-900 dark:text-white">
+    <div className="flex w-full max-w-md flex-col gap-6 rounded-xl border border-border bg-card p-8 text-card-foreground shadow-lg">
+      <h1 className="text-center text-2xl font-semibold text-foreground">
         {mode === "login" ? "Entrar" : "Criar conta"}
       </h1>
       {message.length === 0 ? null : (
-        <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
+        <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {message}
         </p>
       )}
@@ -51,7 +51,7 @@ export const LoginFormCardView: React.FC<Props> = ({
         <LoginEmailField email={email} setEmail={setEmail} />
         <LoginPasswordField mode={mode} password={password} setPassword={setPassword} />
         <button
-          className="rounded-lg bg-indigo-500 py-2 text-sm font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
+          className="rounded-lg bg-primary py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/85 disabled:opacity-50"
           disabled={pending}
           type="submit"
         >
@@ -59,7 +59,7 @@ export const LoginFormCardView: React.FC<Props> = ({
         </button>
       </form>
       <button
-        className="flex flex-row items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white py-2 text-sm font-semibold text-slate-900 hover:bg-slate-100 dark:border-white/15"
+        className="flex flex-row items-center justify-center gap-2 rounded-lg border border-border bg-background py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
         onClick={handleGoogleClick}
         type="button"
       >
@@ -67,7 +67,7 @@ export const LoginFormCardView: React.FC<Props> = ({
         Entrar com Google
       </button>
       <button
-        className="text-center text-sm text-indigo-700 hover:text-indigo-600 dark:text-indigo-300 dark:hover:text-indigo-200"
+        className="text-center text-sm font-medium text-primary hover:text-primary/80"
         onClick={toggleMode}
         type="button"
       >

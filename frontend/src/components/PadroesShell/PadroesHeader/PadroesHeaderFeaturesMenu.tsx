@@ -11,11 +11,7 @@ type Props = {
   onImportPatterns: () => void;
 };
 
-export const PadroesHeaderFeaturesMenu: React.FC<Props> = ({
-  exportZipDisabled,
-  onExportZip,
-  onImportPatterns,
-}) => {
+export const PadroesHeaderFeaturesMenu: React.FC<Props> = ({ exportZipDisabled, onExportZip, onImportPatterns }) => {
   const menuPanelId = React.useId();
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -43,7 +39,7 @@ export const PadroesHeaderFeaturesMenu: React.FC<Props> = ({
         aria-controls={menuPanelId}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex items-center gap-2 rounded-md border border-[#e7ecea] bg-[#f7f8f8] px-3 py-2 text-sm text-[#52615d] transition-colors duration-150 hover:border-[#0b8f7f]/40 hover:bg-[#eef4f2] hover:text-[#22302d] dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-white/20 dark:hover:bg-white/10 dark:hover:text-white"
+        className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm text-muted-foreground shadow-xs transition-colors duration-150 hover:border-ring/35 hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
         onClick={handleToggleOpen}
       >
         <Settings aria-hidden className={iconClass} data-lucide="settings" />
@@ -53,13 +49,13 @@ export const PadroesHeaderFeaturesMenu: React.FC<Props> = ({
       {open ? (
         <div className="absolute start-0 top-full z-20 flex flex-col pt-2">
           <div
-            className="min-w-52 rounded-md border border-[#e4ebe8] bg-white py-1 shadow-lg shadow-slate-300/40 dark:border-white/10 dark:bg-[#141d1b] dark:shadow-black/40"
+            className="min-w-52 rounded-lg border border-border bg-popover py-1 text-popover-foreground shadow-lg"
             id={menuPanelId}
             role="menu"
           >
             <button
               type="button"
-              className="flex w-full px-3 py-2 text-left text-sm text-[#52615d] transition-colors duration-150 hover:bg-[#eef4f2] dark:text-slate-200 dark:hover:bg-white/10"
+              className="flex w-full px-3 py-2 text-left text-sm text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground"
               role="menuitem"
               onClick={handleImport}
             >
@@ -68,7 +64,7 @@ export const PadroesHeaderFeaturesMenu: React.FC<Props> = ({
             <button
               type="button"
               disabled={exportZipDisabled}
-              className="flex w-full px-3 py-2 text-left text-sm text-[#52615d] transition-colors duration-150 hover:bg-[#eef4f2] disabled:cursor-not-allowed disabled:opacity-40 dark:text-slate-200 dark:hover:bg-white/10"
+              className="flex w-full px-3 py-2 text-left text-sm text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
               role="menuitem"
               onClick={handleExportZip}
             >
@@ -76,7 +72,7 @@ export const PadroesHeaderFeaturesMenu: React.FC<Props> = ({
             </button>
             <Link
               to="/export-history"
-              className="flex w-full px-3 py-2 text-left text-sm text-[#52615d] transition-colors duration-150 hover:bg-[#eef4f2] dark:text-slate-200 dark:hover:bg-white/10"
+              className="flex w-full px-3 py-2 text-left text-sm text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground"
               role="menuitem"
               onClick={(): void => {
                 setOpen(false);

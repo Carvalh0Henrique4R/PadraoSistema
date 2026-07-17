@@ -55,7 +55,7 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
   return (
     <PadroesShellContext.Provider value={shellValue}>
       <PadroesShellListSearchProvider>
-        <div className="flex min-h-full flex-1 flex-col bg-[#f7f8f8] text-[#22302d] dark:bg-[#111817] dark:text-white">
+        <div className="flex min-h-full flex-1 flex-col bg-background text-foreground">
           <PadroesHeader
             exportZipError={exportError}
             patternCount={patterns.length}
@@ -66,9 +66,9 @@ export const PadroesShellPatternsLoaded: React.FC<Props> = ({ children, patterns
             onImportPatterns={importModal.handleOpenImport}
             onNovoPadrao={handleOpenNovo}
           />
-          <div className="flex min-h-0 flex-1">
+          <div className="flex min-h-0 flex-1 bg-muted/35">
             <PadroesSidebar patterns={patterns} />
-            <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-white dark:bg-[#111817]">
+            <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-[linear-gradient(180deg,var(--background),color-mix(in_oklch,var(--muted),var(--background)_55%))]">
               {children}
             </main>
           </div>

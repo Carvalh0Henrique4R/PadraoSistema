@@ -13,6 +13,7 @@ import { mountApiRoutes } from "./api/mountRoutes";
 import type { AppVariables } from "./types/app";
 
 const app = new Hono<{ Variables: AppVariables }>();
+const csrfProtection = csrf();
 
 const resolveOrigin = (origin: string): string | null => {
   if (env.ENVIRONMENT !== "development") {
@@ -88,7 +89,13 @@ app.use(
     crossOriginResourcePolicy: false,
   }),
 );
-app.use("*", csrf());
+app.use("*", async (c, next): Promise<void | Response> => {
+  if (c.req.path.startsWith("/api/auth/")) {
+    await next();
+    return;
+  }
+  return csrfProtection(c, next);
+});
 
 app.use(
   "/api/auth/*",

@@ -19,8 +19,7 @@ const createApiProxy = (backendUrl: string): ProxyOptions => ({
         proxyReq.setHeader("X-Forwarded-Host", host);
       }
       const rawProto = req.headers["x-forwarded-proto"];
-      const proto =
-        typeof rawProto === "string" ? rawProto.split(",")[0]?.trim() ?? "http" : "http";
+      const proto = typeof rawProto === "string" ? (rawProto.split(",")[0]?.trim() ?? "http") : "http";
       proxyReq.setHeader("X-Forwarded-Proto", proto);
     });
   },
@@ -43,6 +42,12 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
+        "@": path.resolve(__dirname, "./src"),
+        components: path.resolve(__dirname, "./src/components"),
+        hooks: path.resolve(__dirname, "./src/hooks"),
+        lib: path.resolve(__dirname, "./src/lib"),
+        ui: path.resolve(__dirname, "./src/components/ui"),
+        utils: path.resolve(__dirname, "./src/lib"),
         "~": path.resolve(__dirname, "./src"),
       },
     },

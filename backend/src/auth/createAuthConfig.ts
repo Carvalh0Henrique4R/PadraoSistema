@@ -107,6 +107,44 @@ export const createAuthConfig = ({ appEnv, database, oauthEncryptionKey }: Creat
   const useSecureCookies = appEnv.ENVIRONMENT === "production";
   const cookieOpts = buildSessionCookieOptions(useSecureCookies);
   const isDev = appEnv.ENVIRONMENT === "development";
+  const providers: AuthConfig["providers"] = [
+    Credentials({
+      credentials: {
+        email: { label: "Email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials): Promise<{ email: string; id: string; name: string } | null> {
+        const parsed = credentialsSchema.safeParse(credentials);
+        if (!parsed.success) {
+          return null;
+        }
+        const rows = await database.select().from(users).where(eq(users.email, parsed.data.email.toLowerCase()));
+        if (rows.length === 0) {
+          return null;
+        }
+        const row = rows[0];
+        const ph = row.passwordHash;
+        if (ph == null) {
+          return null;
+        }
+        const passwordsMatch = await bcrypt.compare(parsed.data.password, ph);
+        if (!passwordsMatch) {
+          return null;
+        }
+        return { email: row.email, id: String(row.id), name: row.name };
+      },
+    }),
+  ];
+
+  if (appEnv.GOOGLE_CLIENT_ID != null && appEnv.GOOGLE_CLIENT_SECRET != null) {
+    providers.unshift(
+      Google({
+        clientId: appEnv.GOOGLE_CLIENT_ID,
+        clientSecret: appEnv.GOOGLE_CLIENT_SECRET,
+      }),
+    );
+  }
+
   return {
     adapter: createSecureAdapter(
       DrizzleAdapter(database, {
@@ -144,38 +182,7 @@ export const createAuthConfig = ({ appEnv, database, oauthEncryptionKey }: Creat
       session: authSessionCallback,
     },
     debug: isDev,
-    providers: [
-      Google({
-        clientId: appEnv.GOOGLE_CLIENT_ID,
-        clientSecret: appEnv.GOOGLE_CLIENT_SECRET,
-      }),
-      Credentials({
-        credentials: {
-          email: { label: "Email" },
-          password: { label: "Password", type: "password" },
-        },
-        async authorize(credentials): Promise<{ email: string; id: string; name: string } | null> {
-          const parsed = credentialsSchema.safeParse(credentials);
-          if (!parsed.success) {
-            return null;
-          }
-          const rows = await database.select().from(users).where(eq(users.email, parsed.data.email.toLowerCase()));
-          if (rows.length === 0) {
-            return null;
-          }
-          const row = rows[0];
-          const ph = row.passwordHash;
-          if (ph == null) {
-            return null;
-          }
-          const passwordsMatch = await bcrypt.compare(parsed.data.password, ph);
-          if (!passwordsMatch) {
-            return null;
-          }
-          return { email: row.email, id: String(row.id), name: row.name };
-        },
-      }),
-    ],
+    providers,
     secret: appEnv.AUTH_SECRET,
     /**
      * JWT is required for the Credentials provider (no DB session row). Reverting to `strategy: "database"`

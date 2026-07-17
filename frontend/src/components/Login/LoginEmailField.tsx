@@ -10,11 +10,11 @@ export const LoginEmailField: React.FC<Props> = ({ email, setEmail }) => {
     setEmail(ev.target.value);
   };
   return (
-    <label className="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300" htmlFor="login-email">
+    <label className="flex flex-col gap-1 text-sm text-muted-foreground" htmlFor="login-email">
       E-mail
       <input
         autoComplete="email"
-        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 outline-none focus:border-indigo-500 dark:border-white/10 dark:bg-slate-950 dark:text-white"
+        className="rounded-lg border border-input bg-background px-3 py-2 text-foreground outline-none transition-colors focus:border-ring focus:ring-3 focus:ring-ring/20"
         id="login-email"
         value={email}
         onChange={onChange}

@@ -25,10 +25,10 @@ export const PadroesSidebarCategoryLink: React.FC<Props> = ({ icon, pathname, sl
       aria-label={PATTERN_CATEGORY_LABELS[slug]}
       title={PATTERN_CATEGORY_LABELS[slug]}
       className={cn(
-        "flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors duration-150",
+        "flex h-10 w-10 items-center justify-center rounded-lg border text-sm transition-all duration-150",
         isCategoryActive
-          ? "bg-white text-[#078b7c] shadow-sm"
-          : "text-white/90 hover:bg-white/15 hover:text-white",
+          ? "border-sidebar-primary bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+          : "border-transparent text-sidebar-foreground/70 hover:border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
       )}
     >
       <Icon aria-hidden className={navIconClass} data-lucide={dataLucide} />

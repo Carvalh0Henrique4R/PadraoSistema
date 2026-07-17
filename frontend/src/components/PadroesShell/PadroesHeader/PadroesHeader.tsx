@@ -33,13 +33,16 @@ export const PadroesHeader: React.FC<Props> = ({
   const cartEmpty = items.length === 0;
 
   return (
-    <header className="flex shrink-0 flex-col border-b border-[#e7ecea] bg-white dark:border-white/10 dark:bg-[#141d1b]">
-      <div className="flex min-h-14 flex-wrap items-center justify-between gap-3 px-4 py-2 sm:px-5">
+    <header className="flex shrink-0 flex-col border-b border-border bg-card/95 text-card-foreground shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/85">
+      <div className="flex min-h-16 flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <div className="flex min-w-0 max-w-full items-center gap-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#0b8f7f] text-white" aria-hidden>
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm"
+            aria-hidden
+          >
             <Layers className="h-5 w-5 shrink-0" strokeWidth={1.9} />
           </div>
-          <h1 className="truncate text-lg font-semibold text-[#24332f] dark:text-white">Padrões</h1>
+          <h1 className="truncate text-lg font-semibold text-foreground">Padrões</h1>
         </div>
 
         <div className="order-3 min-w-0 flex-[1_1_100%] sm:order-none sm:max-w-md sm:flex-1">
@@ -60,20 +63,22 @@ export const PadroesHeader: React.FC<Props> = ({
               onImportPatterns={onImportPatterns}
             />
           ) : null}
-          <span className="shrink-0 rounded-md border border-[#e7ecea] bg-[#f7f8f8] px-3 py-1.5 text-sm font-medium text-[#52615d] dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+          <span className="shrink-0 rounded-lg border border-border bg-muted px-3 py-1.5 text-sm font-medium text-muted-foreground">
             {patternCount} padrões
           </span>
           {showNovoButton ? (
             <button
               type="button"
               onClick={onNovoPadrao}
-              className="flex shrink-0 items-center gap-2 rounded-md bg-[#0b8f7f] px-3 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#087969]"
+              className="flex shrink-0 items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-colors duration-150 hover:bg-primary/85"
             >
               <Plus aria-hidden className="h-4 w-4" />
               <span className="hidden sm:inline">Novo padrão</span>
             </button>
           ) : null}
-          {showLoggedInChrome && userDisplayName !== null ? <PadroesHeaderUserMenu displayName={userDisplayName} /> : null}
+          {showLoggedInChrome && userDisplayName !== null ? (
+            <PadroesHeaderUserMenu displayName={userDisplayName} />
+          ) : null}
           <div className="flex shrink-0 items-center">
             <PadroesHeaderCartTrigger />
           </div>
